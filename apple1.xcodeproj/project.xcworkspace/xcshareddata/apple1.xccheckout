@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>685FCFD5-8F6E-4C7D-A394-03C45C47CC01</string>
+	<key>IDESourceControlProjectName</key>
+	<string>apple1</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>64f78de7-aa59-e511-a0e8-0002a5492df0++505</key>
+		<string>svn+ssh://svn.phoenixbox.net/svn/apple1/trunk</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>apple1.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>64f78de7-aa59-e511-a0e8-0002a5492df0++505</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectRepositoryRootDictionary</key>
+	<dict>
+		<key>64f78de7-aa59-e511-a0e8-0002a5492df0++505</key>
+		<string>svn+ssh://svn.phoenixbox.net/svn/apple1</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>svn+ssh://svn.phoenixbox.net/svn/apple1/trunk/apple1.xcodeproj</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>64f78de7-aa59-e511-a0e8-0002a5492df0++505</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>64f78de7-aa59-e511-a0e8-0002a5492df0++505</string>
+			<key>IDESourceControlWCCName</key>
+			<string>apple1</string>
+		</dict>
+	</array>
+</dict>
+</plist>
