@@ -12,6 +12,8 @@
 	<dict>
 		<key>64f78de7-aa59-e511-a0e8-0002a5492df0++505</key>
 		<string>svn+ssh://svn.phoenixbox.net/svn/apple1/trunk</string>
+		<key>96dfbd92-d197-e211-9ca9-00110a534b34++505</key>
+		<string>svn+ssh://svn.phoenixbox.net/svn/v6502/trunk</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>apple1.xcodeproj</string>
@@ -19,11 +21,15 @@
 	<dict>
 		<key>64f78de7-aa59-e511-a0e8-0002a5492df0++505</key>
 		<string>../..</string>
+		<key>96dfbd92-d197-e211-9ca9-00110a534b34++505</key>
+		<string>../../v6502/</string>
 	</dict>
 	<key>IDESourceControlProjectRepositoryRootDictionary</key>
 	<dict>
 		<key>64f78de7-aa59-e511-a0e8-0002a5492df0++505</key>
 		<string>svn+ssh://svn.phoenixbox.net/svn/apple1</string>
+		<key>96dfbd92-d197-e211-9ca9-00110a534b34++505</key>
+		<string>svn+ssh://svn.phoenixbox.net/svn/v6502</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>svn+ssh://svn.phoenixbox.net/svn/apple1/trunk/apple1.xcodeproj</string>
@@ -40,6 +46,14 @@
 			<string>64f78de7-aa59-e511-a0e8-0002a5492df0++505</string>
 			<key>IDESourceControlWCCName</key>
 			<string>apple1</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>96dfbd92-d197-e211-9ca9-00110a534b34++505</string>
+			<key>IDESourceControlWCCName</key>
+			<string>v6502</string>
 		</dict>
 	</array>
 </dict>

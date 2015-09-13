@@ -6,10 +6,29 @@
 //  Copyright (c) 2015 Daniel Loffgren. All rights reserved.
 //
 
-#include <stdio.h>
+#include <v6502/cpu.h>
+#include <v6502/mem.h>
 
-int main(int argc, const char * argv[]) {
-	// insert code here...
-	printf("Hello, World!\n");
-    return 0;
+void fault(void *ctx, const char *e) {
+	(*(int *)ctx)++;
+}
+
+int main(int argc, const char * argv[])
+{
+	int faulted = 0;
+	
+	v6502_cpu *cpu = v6502_createCPU();
+	cpu->memory = v6502_createMemory(0xFFFF);
+	cpu->fault_callback = fault;
+	cpu->fault_context = &faulted;
+	
+	v6502_reset(cpu);
+	
+	while (!faulted) {
+		v6502_step(cpu);
+	}
+	
+	
+	v6502_destroyMemory(cpu->memory);
+	v6502_destroyCPU(cpu);
 }
