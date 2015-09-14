@@ -13,8 +13,9 @@
 #include <unistd.h>
 #include <dis6502/reverse.h>
 
-#define ROM_START	0xF000
-#define ROM_SIZE	0x00FF
+#define ROM_START		0xF000
+#define ROM_SIZE		0x00FF
+#define RESET_VECTOR	0xFF00
 #define MAX_INSTRUCTION_LEN		32
 
 void fault(void *ctx, const char *e) {
@@ -91,8 +92,8 @@ int main(int argc, const char * argv[])
 	}
 	
 	// Set the reset vector
-	v6502_write(cpu->memory, v6502_memoryVectorResetLow, ROM_START & 0xFF);
-	v6502_write(cpu->memory, v6502_memoryVectorResetHigh, ROM_START >> 8);
+	v6502_write(cpu->memory, v6502_memoryVectorResetLow, RESET_VECTOR & 0xFF);
+	v6502_write(cpu->memory, v6502_memoryVectorResetHigh, RESET_VECTOR >> 8);
 	
 	// Attach PIA
 	pia_map(cpu->memory);
@@ -100,8 +101,8 @@ int main(int argc, const char * argv[])
 	v6502_reset(cpu);
 	
 	while (!faulted) {
-		v6502_step(cpu);
 		//printSingleInstruction(cpu, cpu->pc);
+		v6502_step(cpu);
 	}
 	
 	v6502_destroyMemory(cpu->memory);
