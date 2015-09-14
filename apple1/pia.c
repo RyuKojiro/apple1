@@ -39,10 +39,6 @@ char asciiCharFromA1Char(uint8_t c) {
 		case 0xDF: return 0x7F; // Backspace
 	}
 	
-	if (c >= 'a' && c <= 'z') {
-		return (char)c & ~0x20;
-	}
-	
 	return (char)c;
 }
 
@@ -52,6 +48,11 @@ uint8_t a1CharFromAsciiChar(char c) {
 		case '\r': return 0x8D;
 		case 0x7F: return 0xDF; // Backspace
 	}
+	
+	if (c >= 'a' && c <= 'z') {
+		return (char)c & ~0x20;
+	}
+
 	return (char)c;
 }
 
@@ -59,7 +60,7 @@ void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8
 	if (value) {
 		char c = asciiCharFromA1Char(value);
 		if (c == '\n') {
-			fprintf(stdout, "\n\r");
+			fprintf(stdout, "\r");
 		}
 		if (c == 0x7f) {
 			int y, x;
