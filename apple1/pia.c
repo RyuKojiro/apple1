@@ -26,7 +26,7 @@ char asciiCharFromA1Char(uint8_t c) {
 uint8_t a1CharFromAsciiChar(char c) {
 	switch (c) {
 		case '\\': return 0xDC;
-		case '\n': return 0x8D;
+		case '\r': return 0x8D;
 	}
 	return (char)c;
 }
@@ -34,7 +34,7 @@ uint8_t a1CharFromAsciiChar(char c) {
 void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, void *context) {
 	if (value) {
 		char c = asciiCharFromA1Char(value);
-		if (c == '\r') {
+		if (c == '\n') {
 			fprintf(stdout, "\n\r");
 		}
 		else {
