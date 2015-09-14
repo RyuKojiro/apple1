@@ -9,6 +9,7 @@
 #include "pia.h"
 #include <stdio.h>
 #include <as6502/color.h>
+#include <stdlib.h>
 
 #define FIXME_I_SHOULDNT_BE_NULL NULL
 
@@ -35,13 +36,29 @@ void videoWriteNewlineCallback(struct _v6502_memory *memory, uint16_t offset, ui
 }
 
 uint8_t keyboardReadNewlineCallback(struct _v6502_memory *memory, uint16_t offset, int trap, void *context) {
-	// FIXME: this is just to satiate the woz monitor until real input is hooked up 
+	// FIXME: this is just to satiate the woz monitor until real input is hooked up
 	return 1;
 }
 
-void pia_map(v6502_memory *mem) {
-	v6502_map(mem, A1PIA_KEYBOARD_INPUT, 1, FIXME_I_SHOULDNT_BE_NULL, NULL, NULL);
-	v6502_map(mem, A1PIA_KEYBOARD_CRLF_REG, 1, keyboardReadNewlineCallback, NULL, NULL);
-	v6502_map(mem, A1PIA_VIDEO_OUTPUT, 1, FIXME_I_SHOULDNT_BE_NULL, videoWriteCharCallback, NULL);
-	v6502_map(mem, A1PIA_VIDEO_CRLF_REG, 1, FIXME_I_SHOULDNT_BE_NULL, videoWriteNewlineCallback, NULL);
+static void _doCoolVideoStart(a1pia *pia) {
+	
+}
+
+a1pia *pia_create(v6502_memory *mem) {
+	a1pia *pia = malloc(sizeof(a1pia));
+	pia->memory = mem;
+	pia->screen = initscr();
+
+	v6502_map(mem, A1PIA_KEYBOARD_INPUT, 1, FIXME_I_SHOULDNT_BE_NULL, NULL, pia);
+	v6502_map(mem, A1PIA_KEYBOARD_CRLF_REG, 1, keyboardReadNewlineCallback, NULL, pia);
+	v6502_map(mem, A1PIA_VIDEO_OUTPUT, 1, FIXME_I_SHOULDNT_BE_NULL, videoWriteCharCallback, pia);
+	v6502_map(mem, A1PIA_VIDEO_CRLF_REG, 1, FIXME_I_SHOULDNT_BE_NULL, videoWriteNewlineCallback, pia);
+
+	_doCoolVideoStart(pia);
+	return pia;
+}
+
+void pia_destroy(a1pia *pia) {
+	endwin();
+	free(pia);
 }

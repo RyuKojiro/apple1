@@ -96,7 +96,7 @@ int main(int argc, const char * argv[])
 	v6502_write(cpu->memory, v6502_memoryVectorResetHigh, RESET_VECTOR >> 8);
 	
 	// Attach PIA
-	pia_map(cpu->memory);
+	a1pia *pia = pia_create(cpu->memory);
 	
 	v6502_reset(cpu);
 	
@@ -105,6 +105,7 @@ int main(int argc, const char * argv[])
 		v6502_step(cpu);
 	}
 	
+	pia_destroy(pia);
 	v6502_destroyMemory(cpu->memory);
 	v6502_destroyCPU(cpu);
 }
