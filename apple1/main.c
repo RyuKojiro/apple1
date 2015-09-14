@@ -8,10 +8,39 @@
 
 #include <v6502/cpu.h>
 #include <v6502/mem.h>
+#include <stdio.h>
+
+#define ROM_START	0xF000
+#define ROM_SIZE	0x00FF
 
 void fault(void *ctx, const char *e) {
 	(*(int *)ctx)++;
 }
+
+static void loadRomFile(v6502_memory *mem, const char *fname, uint16_t address) {
+	FILE *f = fopen(fname, "r");
+	
+	if (!f) {
+		fprintf(stderr, "Could not read from \"%s\"!\n", fname);
+		return;
+	}
+	
+	uint8_t byte;
+	uint16_t offset = 0;
+	
+	while (fread(&byte, 1, 1, f)) {
+		mem->bytes[address + (offset++)] = byte;
+	}
+	
+	printf("Loaded %u bytes at 0x%x.\n", offset, address);
+	
+	fclose(f);
+}
+
+uint8_t romMirrorCallback(struct _v6502_memory *memory, uint16_t offset, int trap, void *context) {
+	return memory->bytes[offset % ROM_SIZE];
+}
+
 
 int main(int argc, const char * argv[])
 {
@@ -21,6 +50,14 @@ int main(int argc, const char * argv[])
 	cpu->memory = v6502_createMemory(0xFFFF);
 	cpu->fault_callback = fault;
 	cpu->fault_context = &faulted;
+	
+	// Load Woz Monitor
+	loadRomFile(cpu->memory, "apple1.rom", ROM_START);
+	for (uint16_t start = ROM_START + ROM_SIZE + 1;
+		 start < v6502_memoryStartCeiling && start > ROM_START;
+		 start += ROM_SIZE + 1) {
+		v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
+	}
 	
 	v6502_reset(cpu);
 	
