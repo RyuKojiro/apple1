@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E668389E1BA4F51E008F0F06 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E668389D1BA4F51E008F0F06 /* main.c */; };
 		E66839001BA4F75C008F0F06 /* liblibv6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838F61BA4F705008F0F06 /* liblibv6502.a */; };
+		E66839061BA53A82008F0F06 /* pia.c in Sources */ = {isa = PBXBuildFile; fileRef = E66839041BA53A82008F0F06 /* pia.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +115,8 @@
 		E668389A1BA4F51E008F0F06 /* apple1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = apple1; sourceTree = BUILT_PRODUCTS_DIR; };
 		E668389D1BA4F51E008F0F06 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		E66838D31BA4F705008F0F06 /* v6502.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = v6502.xcodeproj; path = v6502/v6502.xcodeproj; sourceTree = SOURCE_ROOT; };
+		E66839041BA53A82008F0F06 /* pia.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pia.c; sourceTree = "<group>"; };
+		E66839051BA53A82008F0F06 /* pia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pia.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +152,8 @@
 			isa = PBXGroup;
 			children = (
 				E668389D1BA4F51E008F0F06 /* main.c */,
+				E66839041BA53A82008F0F06 /* pia.c */,
+				E66839051BA53A82008F0F06 /* pia.h */,
 			);
 			path = apple1;
 			sourceTree = "<group>";
@@ -322,6 +327,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E66839061BA53A82008F0F06 /* pia.c in Sources */,
 				E668389E1BA4F51E008F0F06 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
