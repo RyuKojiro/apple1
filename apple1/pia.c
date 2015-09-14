@@ -12,6 +12,8 @@
 #include <stdlib.h>
 
 #define FIXME_I_SHOULDNT_BE_NULL NULL
+#define KEYBOARD_READY 0xFF // This just needs to meet the requirements of being a negative number in the eyes of the 6502
+#define KEYBOARD_NOTREADY 0x00
 
 char asciiCharFromA1Char(uint8_t c) {
 	switch (c) {
@@ -45,17 +47,17 @@ void videoWriteNewlineCallback(struct _v6502_memory *memory, uint16_t offset, ui
 
 uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset, int trap, a1pia *context) {
 	if (context->buf) {
-		return 0xFF;
+		return KEYBOARD_READY;
 	}
 	
 	int c = getch();
 	
 	if (c != ERR) {
 		context->buf = c;
-		return 0xFF;
+		return KEYBOARD_READY;
 	}
 	
-	return 0;
+	return KEYBOARD_NOTREADY;
 }
 
 uint8_t keyboardReadCharacterCallback(struct _v6502_memory *memory, uint16_t offset, int trap, a1pia *context) {
@@ -77,7 +79,7 @@ a1pia *pia_create(v6502_memory *mem) {
 	pia->memory = mem;
 	pia->screen = initscr();
 	//nodelay(stdscr, true);
-	raw();
+	crmode();
 	noecho();
 	
 	v6502_map(mem, A1PIA_KEYBOARD_INPUT, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia);
