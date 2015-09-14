@@ -12,9 +12,21 @@
 
 #define FIXME_I_SHOULDNT_BE_NULL NULL
 
+char asciiCharFromA1Char(uint8_t c) {
+	switch (c) {
+		case 0xDC: return '\\';
+		case 0x8D: return '\n';
+	}
+	return (char)c;
+}
+
 void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, void *context) {
-	fprintf(stdout, ANSI_COLOR_BRIGHT_GREEN "%c" ANSI_COLOR_RESET, value);
-	fflush(stdout);
+	if (value) {
+		fprintf(stdout, ANSI_COLOR_BRIGHT_GREEN "%c" ANSI_COLOR_RESET, asciiCharFromA1Char(value));
+		//fprintf(stderr, "I was asked to print (0x%02x)\n", value);
+		//memory->bytes[offset] = value;
+		fflush(stdout);
+	}
 }
 
 void videoWriteNewlineCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, void *context) {
