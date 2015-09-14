@@ -17,10 +17,26 @@
 #define KEYBOARD_NOTREADY 0x00
 #define ANSI_BGCOLOR_GREEN   "\x1b[42;1m"
 
+void saveFreeze(v6502_memory *mem, const char *fname) {
+	FILE *f = fopen(fname, "w");
+	if (!f) {
+		endwin();
+		fprintf(stderr, "Couldn't open %s for writing\n", fname);
+	}
+	
+	for (uint16_t offset = 0; offset < v6502_memoryStartCeiling; offset++) {
+		uint8_t byte = v6502_read(mem, offset, NO);
+		fwrite(&byte, sizeof(uint8_t), 1, f);
+	}
+	
+	fclose(f);
+}
+
 char asciiCharFromA1Char(uint8_t c) {
 	switch (c) {
 		case 0xDC: return '\\';
 		case 0x8D: return '\n';
+		case 0xDF: return 0x7F; // Backspace
 	}
 	
 	if (c >= 'a' && c <= 'z') {
@@ -34,15 +50,25 @@ uint8_t a1CharFromAsciiChar(char c) {
 	switch (c) {
 		case '\\': return 0xDC;
 		case '\r': return 0x8D;
+		case 0x7F: return 0xDF; // Backspace
 	}
 	return (char)c;
 }
 
-void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, void *context) {
+void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, a1pia *context) {
 	if (value) {
 		char c = asciiCharFromA1Char(value);
 		if (c == '\n') {
 			fprintf(stdout, "\n\r");
+		}
+		if (c == 0x7f) {
+			int y, x;
+			getyx(context->screen, y, x);
+			if (x < 0) {
+				move(y, x-1);
+			}
+			delch();
+			refresh();
 		}
 		else {
 			fprintf(stdout, ANSI_COLOR_BRIGHT_GREEN "%c" ANSI_COLOR_RESET, c);
@@ -52,16 +78,21 @@ void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8
 	}
 }
 
-void videoWriteNewlineCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, void *context) {
+void videoWriteNewlineCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, a1pia *context) {
 	fprintf(stdout, "\r\n");
 	fflush(stdout);
 }
 
 uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset, int trap, a1pia *context) {
+	if (!trap) {
+		return 0xbf;
+	}
+	
 	if (context->buf) {
 		return KEYBOARD_READY;
 	}
 	
+	saveFreeze(memory, "freeze.ram");
 	int c = getch();
 	
 	if (c != ERR) {
@@ -105,8 +136,8 @@ a1pia *pia_create(v6502_memory *mem) {
 	
 	v6502_map(mem, A1PIA_KEYBOARD_INPUT, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia);
 	v6502_map(mem, A1PIA_KEYBOARD_CRLF_REG, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia);
-	v6502_map(mem, A1PIA_VIDEO_OUTPUT, 1, FIXME_I_SHOULDNT_BE_NULL, videoWriteCharCallback, pia);
-	v6502_map(mem, A1PIA_VIDEO_CRLF_REG, 1, FIXME_I_SHOULDNT_BE_NULL, videoWriteNewlineCallback, pia);
+	v6502_map(mem, A1PIA_VIDEO_OUTPUT, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteCharCallback, pia);
+	v6502_map(mem, A1PIA_VIDEO_CRLF_REG, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteNewlineCallback, pia);
 
 	_doCoolVideoStart(pia);
 	return pia;
