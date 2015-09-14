@@ -22,7 +22,12 @@ char asciiCharFromA1Char(uint8_t c) {
 		case 0xDC: return '\\';
 		case 0x8D: return '\n';
 	}
-	return (char)c & ~0x20;
+	
+	if (c >= 'a' && c <= 'z') {
+		return (char)c & ~0x20;
+	}
+	
+	return (char)c;
 }
 
 uint8_t a1CharFromAsciiChar(char c) {
