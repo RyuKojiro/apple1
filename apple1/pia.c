@@ -18,26 +18,54 @@ char asciiCharFromA1Char(uint8_t c) {
 		case 0xDC: return '\\';
 		case 0x8D: return '\n';
 	}
+	return (char)c & ~0x20;
+}
+
+uint8_t a1CharFromAsciiChar(char c) {
+	switch (c) {
+		case '\\': return 0xDC;
+		case '\n': return 0x8D;
+	}
 	return (char)c;
 }
 
 void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, void *context) {
 	if (value) {
 		fprintf(stdout, ANSI_COLOR_BRIGHT_GREEN "%c" ANSI_COLOR_RESET, asciiCharFromA1Char(value));
-		//fprintf(stderr, "I was asked to print (0x%02x)\n", value);
+//		fprintf(stderr, "I was asked to print (0x%02x)\n", value);
 		//memory->bytes[offset] = value;
 		fflush(stdout);
 	}
 }
 
 void videoWriteNewlineCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, void *context) {
-	fprintf(stdout, ANSI_COLOR_BRIGHT_GREEN "\n" ANSI_COLOR_RESET);
+	fprintf(stdout, ANSI_COLOR_BRIGHT_GREEN "\r\n" ANSI_COLOR_RESET);
 	fflush(stdout);
 }
 
-uint8_t keyboardReadNewlineCallback(struct _v6502_memory *memory, uint16_t offset, int trap, void *context) {
-	// FIXME: this is just to satiate the woz monitor until real input is hooked up
-	return 1;
+uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset, int trap, a1pia *context) {
+	if (context->buf) {
+		return 0xFF;
+	}
+	
+	int c = getch();
+	
+	if (c != ERR) {
+		context->buf = c;
+		return 0xFF;
+	}
+	
+	return 0;
+}
+
+uint8_t keyboardReadCharacterCallback(struct _v6502_memory *memory, uint16_t offset, int trap, a1pia *context) {
+	if (context->buf) {
+		uint8_t a = a1CharFromAsciiChar(context->buf);
+		context->buf = '\0';
+		return a;
+	}
+	
+	return 0;
 }
 
 static void _doCoolVideoStart(a1pia *pia) {
@@ -48,9 +76,12 @@ a1pia *pia_create(v6502_memory *mem) {
 	a1pia *pia = malloc(sizeof(a1pia));
 	pia->memory = mem;
 	pia->screen = initscr();
-
-	v6502_map(mem, A1PIA_KEYBOARD_INPUT, 1, FIXME_I_SHOULDNT_BE_NULL, NULL, pia);
-	v6502_map(mem, A1PIA_KEYBOARD_CRLF_REG, 1, keyboardReadNewlineCallback, NULL, pia);
+	//nodelay(stdscr, true);
+	raw();
+	noecho();
+	
+	v6502_map(mem, A1PIA_KEYBOARD_INPUT, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia);
+	v6502_map(mem, A1PIA_KEYBOARD_CRLF_REG, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia);
 	v6502_map(mem, A1PIA_VIDEO_OUTPUT, 1, FIXME_I_SHOULDNT_BE_NULL, videoWriteCharCallback, pia);
 	v6502_map(mem, A1PIA_VIDEO_CRLF_REG, 1, FIXME_I_SHOULDNT_BE_NULL, videoWriteNewlineCallback, pia);
 

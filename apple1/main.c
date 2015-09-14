@@ -100,9 +100,10 @@ int main(int argc, const char * argv[])
 	
 	v6502_reset(cpu);
 	
+//	printSingleInstruction(cpu, cpu->pc);
 	while (!faulted) {
-		//printSingleInstruction(cpu, cpu->pc);
 		v6502_step(cpu);
+//		printSingleInstruction(cpu, cpu->pc);
 	}
 	
 	pia_destroy(pia);

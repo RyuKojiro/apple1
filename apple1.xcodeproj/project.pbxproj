@@ -10,6 +10,9 @@
 		E668389E1BA4F51E008F0F06 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E668389D1BA4F51E008F0F06 /* main.c */; };
 		E66839001BA4F75C008F0F06 /* liblibv6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838F61BA4F705008F0F06 /* liblibv6502.a */; };
 		E66839061BA53A82008F0F06 /* pia.c in Sources */ = {isa = PBXBuildFile; fileRef = E66839041BA53A82008F0F06 /* pia.c */; };
+		E668391B1BA64C5B008F0F06 /* liblibdis6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838FC1BA4F705008F0F06 /* liblibdis6502.a */; };
+		E668391E1BA64C61008F0F06 /* liblibas6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838F81BA4F705008F0F06 /* liblibas6502.a */; };
+		E66839201BA659A6008F0F06 /* libcurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E668391F1BA659A6008F0F06 /* libcurses.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +100,20 @@
 			remoteGlobalIDString = E638A4901B8AAA2300B71420;
 			remoteInfo = libv6502;
 		};
+		E66839191BA64C56008F0F06 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E66838D31BA4F705008F0F06 /* v6502.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = E638A4C71B8AAABC00B71420;
+			remoteInfo = libdis6502;
+		};
+		E668391C1BA64C5E008F0F06 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E66838D31BA4F705008F0F06 /* v6502.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = E638A49D1B8AAA6300B71420;
+			remoteInfo = libas6502;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -117,6 +134,7 @@
 		E66838D31BA4F705008F0F06 /* v6502.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = v6502.xcodeproj; path = v6502/v6502.xcodeproj; sourceTree = SOURCE_ROOT; };
 		E66839041BA53A82008F0F06 /* pia.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pia.c; sourceTree = "<group>"; };
 		E66839051BA53A82008F0F06 /* pia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pia.h; sourceTree = "<group>"; };
+		E668391F1BA659A6008F0F06 /* libcurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurses.dylib; path = usr/lib/libcurses.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +142,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E66839201BA659A6008F0F06 /* libcurses.dylib in Frameworks */,
+				E668391E1BA64C61008F0F06 /* liblibas6502.a in Frameworks */,
+				E668391B1BA64C5B008F0F06 /* liblibdis6502.a in Frameworks */,
 				E66839001BA4F75C008F0F06 /* liblibv6502.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -152,8 +173,8 @@
 			isa = PBXGroup;
 			children = (
 				E668389D1BA4F51E008F0F06 /* main.c */,
-				E66839041BA53A82008F0F06 /* pia.c */,
 				E66839051BA53A82008F0F06 /* pia.h */,
+				E66839041BA53A82008F0F06 /* pia.c */,
 			);
 			path = apple1;
 			sourceTree = "<group>";
@@ -161,6 +182,7 @@
 		E66838D21BA4F6F8008F0F06 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E668391F1BA659A6008F0F06 /* libcurses.dylib */,
 				E66838D31BA4F705008F0F06 /* v6502.xcodeproj */,
 			);
 			name = Frameworks;
@@ -198,6 +220,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				E668391D1BA64C5E008F0F06 /* PBXTargetDependency */,
+				E668391A1BA64C56008F0F06 /* PBXTargetDependency */,
 				E66838FF1BA4F753008F0F06 /* PBXTargetDependency */,
 			);
 			name = apple1;
@@ -339,6 +363,16 @@
 			isa = PBXTargetDependency;
 			name = libv6502;
 			targetProxy = E66838FE1BA4F753008F0F06 /* PBXContainerItemProxy */;
+		};
+		E668391A1BA64C56008F0F06 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libdis6502;
+			targetProxy = E66839191BA64C56008F0F06 /* PBXContainerItemProxy */;
+		};
+		E668391D1BA64C5E008F0F06 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = libas6502;
+			targetProxy = E668391C1BA64C5E008F0F06 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
