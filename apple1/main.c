@@ -9,6 +9,8 @@
 #include <v6502/cpu.h>
 #include <v6502/mem.h>
 #include <stdio.h>
+#include "pia.h"
+#include <unistd.h>
 
 #define ROM_START	0xF000
 #define ROM_SIZE	0x00FF
@@ -32,7 +34,7 @@ static void loadRomFile(v6502_memory *mem, const char *fname, uint16_t address) 
 		mem->bytes[address + (offset++)] = byte;
 	}
 	
-	printf("Loaded %u bytes at 0x%x.\n", offset, address);
+	fprintf(stderr, "Loaded %u bytes at 0x%x.\n", offset, address);
 	
 	fclose(f);
 }
@@ -47,7 +49,7 @@ int main(int argc, const char * argv[])
 	int faulted = 0;
 	
 	v6502_cpu *cpu = v6502_createCPU();
-	cpu->memory = v6502_createMemory(0xFFFF);
+	cpu->memory = v6502_createMemory(v6502_memoryStartCeiling + 1);
 	cpu->fault_callback = fault;
 	cpu->fault_context = &faulted;
 	
@@ -59,12 +61,19 @@ int main(int argc, const char * argv[])
 		v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
 	}
 	
+	// Set the reset vector
+	v6502_write(cpu->memory, v6502_memoryVectorResetLow, ROM_START & 0xFF);
+	v6502_write(cpu->memory, v6502_memoryVectorResetHigh, ROM_START >> 8);
+	
+	// Attach PIA
+	pia_map(cpu->memory);
+	
 	v6502_reset(cpu);
 	
 	while (!faulted) {
 		v6502_step(cpu);
+		usleep(1); // 1MHz
 	}
-	
 	
 	v6502_destroyMemory(cpu->memory);
 	v6502_destroyCPU(cpu);
