@@ -11,9 +11,11 @@
 #include <stdio.h>
 #include "pia.h"
 #include <unistd.h>
+#include <dis6502/reverse.h>
 
 #define ROM_START	0xF000
 #define ROM_SIZE	0x00FF
+#define MAX_INSTRUCTION_LEN		32
 
 void fault(void *ctx, const char *e) {
 	(*(int *)ctx)++;
@@ -34,7 +36,7 @@ static void loadRomFile(v6502_memory *mem, const char *fname, uint16_t address) 
 		mem->bytes[address + (offset++)] = byte;
 	}
 	
-	fprintf(stderr, "Loaded %u bytes at 0x%x.\n", offset, address);
+	fprintf(stderr, "loaded \"%s\" at 0x%04x\n", fname, address);
 	
 	fclose(f);
 }
@@ -43,6 +45,33 @@ uint8_t romMirrorCallback(struct _v6502_memory *memory, uint16_t offset, int tra
 	return memory->bytes[offset % ROM_SIZE];
 }
 
+static int printSingleInstruction(v6502_cpu *cpu, uint16_t address) {
+	char instruction[MAX_INSTRUCTION_LEN];
+	int instructionLength;
+	dis6502_stringForInstruction(instruction, MAX_INSTRUCTION_LEN, cpu->memory->bytes[address], cpu->memory->bytes[address + 2], cpu->memory->bytes[address + 1]);
+	instructionLength = v6502_instructionLengthForOpcode(cpu->memory->bytes[address]);
+	
+	printf("0x%04x: ", address);
+	
+	switch (instructionLength) {
+		case 1: {
+			printf("%02x      ", cpu->memory->bytes[address]);
+		} break;
+		case 2: {
+			printf("%02x %02x   ", cpu->memory->bytes[address], cpu->memory->bytes[address + 1]);
+		} break;
+		case 3: {
+			printf("%02x %02x %02x", cpu->memory->bytes[address], cpu->memory->bytes[address + 1], cpu->memory->bytes[address + 2]);
+		} break;
+		default: {
+			printf("        ");
+		} break;
+	}
+	
+	printf(" - %s\n", instruction);
+	
+	return instructionLength;
+}
 
 int main(int argc, const char * argv[])
 {
@@ -54,11 +83,11 @@ int main(int argc, const char * argv[])
 	cpu->fault_context = &faulted;
 	
 	// Load Woz Monitor
-	loadRomFile(cpu->memory, "apple1.rom", ROM_START);
-	for (uint16_t start = ROM_START + ROM_SIZE + 1;
-		 start < v6502_memoryStartCeiling && start > ROM_START;
+	for (uint16_t start = ROM_START;
+		 start < v6502_memoryStartCeiling && start >= ROM_START;
 		 start += ROM_SIZE + 1) {
-		v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
+		loadRomFile(cpu->memory, "apple1.rom", start);
+		//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
 	}
 	
 	// Set the reset vector
@@ -72,7 +101,7 @@ int main(int argc, const char * argv[])
 	
 	while (!faulted) {
 		v6502_step(cpu);
-		usleep(1); // 1MHz
+		//printSingleInstruction(cpu, cpu->pc);
 	}
 	
 	v6502_destroyMemory(cpu->memory);
