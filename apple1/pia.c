@@ -33,15 +33,20 @@ uint8_t a1CharFromAsciiChar(char c) {
 
 void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, void *context) {
 	if (value) {
-		fprintf(stdout, ANSI_COLOR_BRIGHT_GREEN "%c" ANSI_COLOR_RESET, asciiCharFromA1Char(value));
-//		fprintf(stderr, "I was asked to print (0x%02x)\n", value);
+		char c = asciiCharFromA1Char(value);
+		if (c == '\r') {
+			fprintf(stdout, "\n\r");
+		}
+		else {
+			fprintf(stdout, ANSI_COLOR_BRIGHT_GREEN "%c" ANSI_COLOR_RESET, c);
+		}
 		//memory->bytes[offset] = value;
 		fflush(stdout);
 	}
 }
 
 void videoWriteNewlineCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, void *context) {
-	fprintf(stdout, ANSI_COLOR_BRIGHT_GREEN "\r\n" ANSI_COLOR_RESET);
+	fprintf(stdout, "\r\n");
 	fflush(stdout);
 }
 
@@ -81,6 +86,7 @@ a1pia *pia_create(v6502_memory *mem) {
 	//nodelay(stdscr, true);
 	crmode();
 	noecho();
+	nonl();
 	
 	v6502_map(mem, A1PIA_KEYBOARD_INPUT, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia);
 	v6502_map(mem, A1PIA_KEYBOARD_CRLF_REG, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia);
