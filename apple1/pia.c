@@ -34,9 +34,14 @@ void videoWriteNewlineCallback(struct _v6502_memory *memory, uint16_t offset, ui
 	fflush(stdout);
 }
 
+uint8_t keyboardReadNewlineCallback(struct _v6502_memory *memory, uint16_t offset, int trap, void *context) {
+	// FIXME: this is just to satiate the woz monitor until real input is hooked up 
+	return 1;
+}
+
 void pia_map(v6502_memory *mem) {
 	v6502_map(mem, A1PIA_KEYBOARD_INPUT, 1, FIXME_I_SHOULDNT_BE_NULL, NULL, NULL);
-	v6502_map(mem, A1PIA_KEYBOARD_CRLF_REG, 1, FIXME_I_SHOULDNT_BE_NULL, NULL, NULL);
+	v6502_map(mem, A1PIA_KEYBOARD_CRLF_REG, 1, keyboardReadNewlineCallback, NULL, NULL);
 	v6502_map(mem, A1PIA_VIDEO_OUTPUT, 1, FIXME_I_SHOULDNT_BE_NULL, videoWriteCharCallback, NULL);
 	v6502_map(mem, A1PIA_VIDEO_CRLF_REG, 1, FIXME_I_SHOULDNT_BE_NULL, videoWriteNewlineCallback, NULL);
 }
