@@ -10,10 +10,12 @@
 #include <stdio.h>
 #include <as6502/color.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #define FIXME_I_SHOULDNT_BE_NULL NULL
 #define KEYBOARD_READY 0xFF // This just needs to meet the requirements of being a negative number in the eyes of the 6502
 #define KEYBOARD_NOTREADY 0x00
+#define ANSI_BGCOLOR_GREEN   "\x1b[42;1m"
 
 char asciiCharFromA1Char(uint8_t c) {
 	switch (c) {
@@ -76,7 +78,15 @@ uint8_t keyboardReadCharacterCallback(struct _v6502_memory *memory, uint16_t off
 }
 
 static void _doCoolVideoStart(a1pia *pia) {
+	printf(ANSI_BGCOLOR_GREEN);
 	
+	for (int x = 0; x < 80*25; x++) {
+		printf(" ");
+	}
+	
+	printf(ANSI_COLOR_RESET);
+	fflush(stdout);
+	usleep(100000);
 }
 
 a1pia *pia_create(v6502_memory *mem) {
