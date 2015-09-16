@@ -91,10 +91,6 @@ int main(int argc, const char * argv[])
 		//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
 	}
 	
-	// Set the reset vector
-	v6502_write(cpu->memory, v6502_memoryVectorResetLow, RESET_VECTOR & 0xFF);
-	v6502_write(cpu->memory, v6502_memoryVectorResetHigh, RESET_VECTOR >> 8);
-	
 	// Attach PIA
 	a1pia *pia = pia_create(cpu->memory);
 	
