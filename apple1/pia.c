@@ -35,8 +35,9 @@ void saveFreeze(v6502_memory *mem, const char *fname) {
 char asciiCharFromA1Char(uint8_t c) {
 	switch (c) {
 		case 0xDC: return '\\';
-		case 0x8D: return '\n';
+		case 0x8D: return '\r';
 		case 0xDF: return 0x7F; // Backspace
+		case 0x9B: return '\e'; // Escape
 	}
 	
 	return (char)c;
@@ -47,6 +48,8 @@ uint8_t a1CharFromAsciiChar(char c) {
 		case '\\': return 0xDC;
 		case '\r': return 0x8D;
 		case 0x7F: return 0xDF; // Backspace
+		case '\e': return 0x9B; // Escape
+
 	}
 	
 	if (c >= 'a' && c <= 'z') {
@@ -59,8 +62,8 @@ uint8_t a1CharFromAsciiChar(char c) {
 void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, a1pia *context) {
 	if (value) {
 		char c = asciiCharFromA1Char(value);
-		if (c == '\n') {
-			fprintf(stdout, "\r");
+		if (c == '\r') {
+			fprintf(stdout, "\n");
 		}
 		if (c == 0x7f) {
 			int y, x;
