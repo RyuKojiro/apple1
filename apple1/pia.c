@@ -41,6 +41,10 @@ char asciiCharFromA1Char(uint8_t c) {
 }
 
 uint8_t a1CharFromAsciiChar(char c) {
+	if (c >= 'a' && c <= 'z') {
+		c -= 0x20;
+	}
+	
 	return (char)c | 0x80;
 }
 
