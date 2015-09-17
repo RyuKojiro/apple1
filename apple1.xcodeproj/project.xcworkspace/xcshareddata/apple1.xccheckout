@@ -22,7 +22,7 @@
 		<key>64f78de7-aa59-e511-a0e8-0002a5492df0++505</key>
 		<string>../..</string>
 		<key>96dfbd92-d197-e211-9ca9-00110a534b34++505</key>
-		<string>../../v6502/</string>
+		<string>../../v6502</string>
 	</dict>
 	<key>IDESourceControlProjectRepositoryRootDictionary</key>
 	<dict>
