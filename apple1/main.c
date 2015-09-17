@@ -46,30 +46,30 @@ uint8_t romMirrorCallback(struct _v6502_memory *memory, uint16_t offset, int tra
 	return memory->bytes[offset % ROM_SIZE];
 }
 
-static int printSingleInstruction(v6502_cpu *cpu, uint16_t address) {
+static int printSingleInstruction(FILE *output, v6502_cpu *cpu, uint16_t address) {
 	char instruction[MAX_INSTRUCTION_LEN];
 	int instructionLength;
 	dis6502_stringForInstruction(instruction, MAX_INSTRUCTION_LEN, cpu->memory->bytes[address], cpu->memory->bytes[address + 2], cpu->memory->bytes[address + 1]);
 	instructionLength = v6502_instructionLengthForOpcode(cpu->memory->bytes[address]);
 	
-	printf("0x%04x: ", address);
+	fprintf(output, "0x%04x: ", address);
 	
 	switch (instructionLength) {
 		case 1: {
-			printf("%02x      ", cpu->memory->bytes[address]);
+			fprintf(output, "%02x      ", cpu->memory->bytes[address]);
 		} break;
 		case 2: {
-			printf("%02x %02x   ", cpu->memory->bytes[address], cpu->memory->bytes[address + 1]);
+			fprintf(output, "%02x %02x   ", cpu->memory->bytes[address], cpu->memory->bytes[address + 1]);
 		} break;
 		case 3: {
-			printf("%02x %02x %02x", cpu->memory->bytes[address], cpu->memory->bytes[address + 1], cpu->memory->bytes[address + 2]);
+			fprintf(output, "%02x %02x %02x", cpu->memory->bytes[address], cpu->memory->bytes[address + 1], cpu->memory->bytes[address + 2]);
 		} break;
 		default: {
-			printf("        ");
+			fprintf(output, "        ");
 		} break;
 	}
 	
-	printf(" - %s\n", instruction);
+	fprintf(output, " - %s\r\n", instruction);
 	
 	return instructionLength;
 }
@@ -97,10 +97,12 @@ int main(int argc, const char * argv[])
 	v6502_reset(cpu);
 	
 //	printSingleInstruction(cpu, cpu->pc);
+	FILE *asmfile = fopen("runtime.s", "w");
 	while (!faulted) {
 		v6502_step(cpu);
-//		printSingleInstruction(cpu, cpu->pc);
+		printSingleInstruction(asmfile, cpu, cpu->pc);
 	}
+	fclose(asmfile);
 	
 	pia_destroy(pia);
 	v6502_destroyMemory(cpu->memory);
