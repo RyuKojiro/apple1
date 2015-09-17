@@ -68,7 +68,6 @@ int main(int argc, const char * argv[])
 	
 	v6502_reset(cpu);
 	
-//	printSingleInstruction(cpu, cpu->pc);
 	FILE *asmfile = fopen("runtime.s", "w");
 	while (!faulted) {
 		v6502_step(cpu);
