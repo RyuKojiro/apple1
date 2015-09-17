@@ -129,6 +129,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		E61FA7421BAA8AEF0022E2EB /* wozmon.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = wozmon.s; sourceTree = "<group>"; };
 		E668389A1BA4F51E008F0F06 /* apple1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = apple1; sourceTree = BUILT_PRODUCTS_DIR; };
 		E668389D1BA4F51E008F0F06 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		E66838D31BA4F705008F0F06 /* v6502.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = v6502.xcodeproj; path = v6502/v6502.xcodeproj; sourceTree = SOURCE_ROOT; };
@@ -175,6 +176,7 @@
 				E668389D1BA4F51E008F0F06 /* main.c */,
 				E66839051BA53A82008F0F06 /* pia.h */,
 				E66839041BA53A82008F0F06 /* pia.c */,
+				E61FA7421BAA8AEF0022E2EB /* wozmon.s */,
 			);
 			path = apple1;
 			sourceTree = "<group>";
