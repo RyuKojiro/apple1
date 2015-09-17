@@ -32,31 +32,16 @@ void saveFreeze(v6502_memory *mem, const char *fname) {
 	fclose(f);
 }
 
+char asciiCharFromCursesKey(int key) {
+	return (char)key;
+}
+
 char asciiCharFromA1Char(uint8_t c) {
-	switch (c) {
-		case 0xDC: return '\\';
-		case 0x8D: return '\r';
-		case 0xDF: return 0x7F; // Backspace
-		case 0x9B: return '\e'; // Escape
-	}
-	
-	return (char)c;
+	return (char)c & ~0x80;
 }
 
 uint8_t a1CharFromAsciiChar(char c) {
-	switch (c) {
-		case '\\': return 0xDC;
-		case '\r': return 0x8D;
-		case 0x7F: return 0xDF; // Backspace
-		case '\e': return 0x9B; // Escape
-
-	}
-	
-	if (c >= 'a' && c <= 'z') {
-		return (char)c & ~0x20;
-	}
-
-	return (char)c;
+	return (char)c | 0x80;
 }
 
 void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, a1pia *context) {
@@ -100,7 +85,7 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 	int c = getch();
 	
 	if (c != ERR) {
-		context->buf = c;
+		context->buf = asciiCharFromCursesKey(c);
 		return KEYBOARD_READY;
 	}
 	
