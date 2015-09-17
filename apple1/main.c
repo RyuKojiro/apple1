@@ -70,8 +70,8 @@ int main(int argc, const char * argv[])
 	
 	FILE *asmfile = fopen("runtime.s", "w");
 	while (!faulted) {
-		v6502_step(cpu);
 		dis6502_printAnnotatedInstruction(asmfile, cpu, cpu->pc);
+		v6502_step(cpu);
 		v6502_printCpuState(asmfile, cpu);
 	}
 	fclose(asmfile);
