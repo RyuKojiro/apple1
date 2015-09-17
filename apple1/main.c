@@ -17,7 +17,6 @@
 #define ROM_START		0xF000
 #define ROM_SIZE		0x00FF
 #define RESET_VECTOR	0xFF00
-#define MAX_INSTRUCTION_LEN		32
 
 void fault(void *ctx, const char *e) {
 	(*(int *)ctx)++;
