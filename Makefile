@@ -1,5 +1,5 @@
 PROG=		a1
-SRCS=		apple1/main.c apple1/pia.c
+SRCS=		apple1/main.c apple1/pia.c v6502/v6502/log.c
 
 V6502_PREFIX= v6502
 LIBV6502_DIR=	$(V6502_PREFIX)/v6502

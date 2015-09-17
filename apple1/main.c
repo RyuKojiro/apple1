@@ -12,6 +12,7 @@
 #include "pia.h"
 #include <unistd.h>
 #include <dis6502/reverse.h>
+#include <v6502/log.h>
 
 #define ROM_START		0xF000
 #define ROM_SIZE		0x00FF
@@ -46,34 +47,6 @@ uint8_t romMirrorCallback(struct _v6502_memory *memory, uint16_t offset, int tra
 	return memory->bytes[offset % ROM_SIZE];
 }
 
-static int printSingleInstruction(FILE *output, v6502_cpu *cpu, uint16_t address) {
-	char instruction[MAX_INSTRUCTION_LEN];
-	int instructionLength;
-	dis6502_stringForInstruction(instruction, MAX_INSTRUCTION_LEN, cpu->memory->bytes[address], cpu->memory->bytes[address + 2], cpu->memory->bytes[address + 1]);
-	instructionLength = v6502_instructionLengthForOpcode(cpu->memory->bytes[address]);
-	
-	fprintf(output, "0x%04x: ", address);
-	
-	switch (instructionLength) {
-		case 1: {
-			fprintf(output, "%02x      ", cpu->memory->bytes[address]);
-		} break;
-		case 2: {
-			fprintf(output, "%02x %02x   ", cpu->memory->bytes[address], cpu->memory->bytes[address + 1]);
-		} break;
-		case 3: {
-			fprintf(output, "%02x %02x %02x", cpu->memory->bytes[address], cpu->memory->bytes[address + 1], cpu->memory->bytes[address + 2]);
-		} break;
-		default: {
-			fprintf(output, "        ");
-		} break;
-	}
-	
-	fprintf(output, " - %s\r\n", instruction);
-	
-	return instructionLength;
-}
-
 int main(int argc, const char * argv[])
 {
 	int faulted = 0;
@@ -100,7 +73,8 @@ int main(int argc, const char * argv[])
 	FILE *asmfile = fopen("runtime.s", "w");
 	while (!faulted) {
 		v6502_step(cpu);
-		printSingleInstruction(asmfile, cpu, cpu->pc);
+		dis6502_printAnnotatedInstruction(asmfile, cpu, cpu->pc);
+		v6502_printCpuState(asmfile, cpu);
 	}
 	fclose(asmfile);
 	
