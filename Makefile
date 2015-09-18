@@ -1,5 +1,5 @@
 PROG=		a1
-SRCS=		apple1/main.c apple1/pia.c v6502/v6502/log.c
+SRCS=		apple1/main.c apple1/pia.c v6502/v6502/log.c v6502/v6502/debugger.c v6502/v6502/breakpoint.c
 
 V6502_PREFIX= v6502
 LIBV6502_DIR=	$(V6502_PREFIX)/v6502
@@ -10,7 +10,7 @@ LIBDIS6502_DIR= $(V6502_PREFIX)/dis6502
 LIBDIS6502=   $(LIBDIS6502_DIR)/libdis6502.a
 
 CFLAGS+=	-I$(V6502_PREFIX) -std=c99
-LDFLAGS+=	-lcurses -ldis6502 -las6502 -lv6502 -L$(LIBV6502_DIR) -L$(LIBAS6502_DIR) -L $(LIBDIS6502_DIR)
+LDFLAGS+=	-ledit -lcurses -ldis6502 -las6502 -lv6502 -L$(LIBV6502_DIR) -L$(LIBAS6502_DIR) -L $(LIBDIS6502_DIR)
 OBJS=		$(SRCS:.c=.o)
 
 all: $(PROG)
