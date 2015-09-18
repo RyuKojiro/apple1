@@ -60,6 +60,8 @@ static const char *prompt() {
 
 int main(int argc, const char * argv[])
 {
+	currentFileName = "apple1";
+
 	cpu = v6502_createCPU();
 	cpu->memory = v6502_createMemory(v6502_memoryStartCeiling + 1);
 	
@@ -67,8 +69,8 @@ int main(int argc, const char * argv[])
 
 	// Load Woz Monitor
 	for (uint16_t start = ROM_START;
-		 start < v6502_memoryStartCeiling && start >= ROM_START;
-		 start += ROM_SIZE + 1) {
+		start < v6502_memoryStartCeiling && start >= ROM_START;
+		start += ROM_SIZE + 1) {
 		v6502_loadFileAtAddress(cpu->memory, "apple1.rom", start);
 		//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
 	}
@@ -84,7 +86,7 @@ int main(int argc, const char * argv[])
 	History *hist = history_init();
 	history(hist, &ev, H_SETSIZE, 100);
 	
-	EditLine *el = el_init("apple1", stdin, stdout, stderr);
+	EditLine *el = el_init(currentFileName, stdin, stdout, stderr);
 	el_set(el, EL_PROMPT, &prompt);
 	el_set(el, EL_SIGNAL, SIGWINCH);
 	el_set(el, EL_EDITOR, "emacs");
