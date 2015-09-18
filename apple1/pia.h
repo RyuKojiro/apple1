@@ -23,6 +23,7 @@ typedef struct {
 	/** @brief Hardwired memory used to trap video activity and report keyboard input */
 	v6502_memory *memory;
 	char buf;
+	int signalled;
 } a1pia;
 
 a1pia *pia_create(v6502_memory *mem);

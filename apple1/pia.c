@@ -88,6 +88,11 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 	saveFreeze(memory, "freeze.ram");
 	int c = getch();
 	
+	if (c == '`') {
+		context->signalled++;
+		return KEYBOARD_NOTREADY;
+	}
+	
 	if (c != ERR) {
 		context->buf = asciiCharFromCursesKey(c);
 		return KEYBOARD_READY;
@@ -145,8 +150,11 @@ void pia_start(a1pia *pia) {
 	crmode();
 	noecho();
 	nonl();
+	pia->signalled = 0;
+	wrefresh(pia->screen);
 }
 
 void pia_stop(a1pia *pia) {
-	
+	pia->screen = NULL;
+	endwin();
 }

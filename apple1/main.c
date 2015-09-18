@@ -24,7 +24,6 @@
 #define ROM_SIZE		0x00FF
 #define RESET_VECTOR	0xFF00
 
-static int faulted = 0;
 static v6502_cpu *cpu;
 static a1pia *pia;
 
@@ -37,9 +36,13 @@ static void fault(void *ctx, const char *e) {
 //}
 
 static void run(v6502_cpu *cpu) {
+	int faulted = 0;
+	cpu->fault_callback = fault;
+	cpu->fault_context = &faulted;
+
 	FILE *asmfile = fopen("runtime.s", "w");
 	pia_start(pia);
-	while (!faulted) {
+	while (!faulted && !pia->signalled) {
 		dis6502_printAnnotatedInstruction(asmfile, cpu, cpu->pc);
 		v6502_step(cpu);
 		v6502_printCpuState(asmfile, cpu);
@@ -58,8 +61,6 @@ int main(int argc, const char * argv[])
 {
 	cpu = v6502_createCPU();
 	cpu->memory = v6502_createMemory(v6502_memoryStartCeiling + 1);
-	cpu->fault_callback = fault;
-	cpu->fault_context = &faulted;
 	
 	v6502_breakpoint_list *breakpoint_list = v6502_createBreakpointList();
 
