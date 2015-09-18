@@ -52,7 +52,7 @@ void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8
 	if (value) {
 		char c = asciiCharFromA1Char(value);
 		if (c == '\r') {
-			fprintf(stdout, "\n");
+			waddch(context->screen, '\n');
 		}
 		if (c == 0x7f) {
 			int y, x;
@@ -64,16 +64,17 @@ void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8
 			refresh();
 		}
 		else {
-			fprintf(stdout, ANSI_COLOR_BRIGHT_GREEN "%c" ANSI_COLOR_RESET, c);
+//			printf(ANSI_COLOR_BRIGHT_GREEN);
+			waddch(context->screen, c);
+//			printf(ANSI_COLOR_RESET);
 		}
 		//memory->bytes[offset] = value;
-		fflush(stdout);
 	}
 }
 
 void videoWriteNewlineCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, a1pia *context) {
-	fprintf(stdout, "\r\n");
-	fflush(stdout);
+//	fprintf(stdout, "\r\n");
+//	fflush(stdout);
 }
 
 uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset, int trap, a1pia *context) {
