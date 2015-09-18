@@ -121,22 +121,32 @@ static void _doCoolVideoStart(a1pia *pia) {
 a1pia *pia_create(v6502_memory *mem) {
 	a1pia *pia = malloc(sizeof(a1pia));
 	pia->memory = mem;
-	pia->screen = initscr();
-	//nodelay(stdscr, true);
-	crmode();
-	noecho();
-	nonl();
+	pia->screen = NULL;
 	
 	v6502_map(mem, A1PIA_KEYBOARD_INPUT, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia);
 	v6502_map(mem, A1PIA_KEYBOARD_CRLF_REG, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia);
 	v6502_map(mem, A1PIA_VIDEO_OUTPUT, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteCharCallback, pia);
 	v6502_map(mem, A1PIA_VIDEO_CRLF_REG, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteNewlineCallback, pia);
 
-	_doCoolVideoStart(pia);
+//	_doCoolVideoStart(pia);
 	return pia;
 }
 
 void pia_destroy(a1pia *pia) {
 	endwin();
 	free(pia);
+}
+
+void pia_start(a1pia *pia) {
+	if (!pia->screen) {
+		pia->screen = initscr();
+	}
+	//nodelay(stdscr, true);
+	crmode();
+	noecho();
+	nonl();
+}
+
+void pia_stop(a1pia *pia) {
+	
 }

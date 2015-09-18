@@ -13,6 +13,7 @@
 		E668391B1BA64C5B008F0F06 /* liblibdis6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838FC1BA4F705008F0F06 /* liblibdis6502.a */; };
 		E668391E1BA64C61008F0F06 /* liblibas6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838F81BA4F705008F0F06 /* liblibas6502.a */; };
 		E66839201BA659A6008F0F06 /* libcurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E668391F1BA659A6008F0F06 /* libcurses.dylib */; };
+		E6ECE7B91BABED0100D1812C /* libedit.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E6ECE7B81BABED0100D1812C /* libedit.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -136,6 +137,7 @@
 		E66839041BA53A82008F0F06 /* pia.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pia.c; sourceTree = "<group>"; };
 		E66839051BA53A82008F0F06 /* pia.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pia.h; sourceTree = "<group>"; };
 		E668391F1BA659A6008F0F06 /* libcurses.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcurses.dylib; path = usr/lib/libcurses.dylib; sourceTree = SDKROOT; };
+		E6ECE7B81BABED0100D1812C /* libedit.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libedit.dylib; path = usr/lib/libedit.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,6 +145,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6ECE7B91BABED0100D1812C /* libedit.dylib in Frameworks */,
 				E66839201BA659A6008F0F06 /* libcurses.dylib in Frameworks */,
 				E668391E1BA64C61008F0F06 /* liblibas6502.a in Frameworks */,
 				E668391B1BA64C5B008F0F06 /* liblibdis6502.a in Frameworks */,
@@ -184,6 +187,7 @@
 		E66838D21BA4F6F8008F0F06 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E6ECE7B81BABED0100D1812C /* libedit.dylib */,
 				E668391F1BA659A6008F0F06 /* libcurses.dylib */,
 				E66838D31BA4F705008F0F06 /* v6502.xcodeproj */,
 			);

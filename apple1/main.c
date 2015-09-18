@@ -6,77 +6,123 @@
 //  Copyright (c) 2015 Daniel Loffgren. All rights reserved.
 //
 
-#include <v6502/cpu.h>
-#include <v6502/mem.h>
 #include <stdio.h>
-#include "pia.h"
 #include <unistd.h>
+#include <histedit.h>
+#include <stdlib.h>
+
 #include <dis6502/reverse.h>
 #include <v6502/log.h>
+#include <v6502/debugger.h>
+#include <v6502/cpu.h>
+#include <v6502/mem.h>
+#include <as6502/error.h>
+
+#include "pia.h"
 
 #define ROM_START		0xF000
 #define ROM_SIZE		0x00FF
 #define RESET_VECTOR	0xFF00
 
-void fault(void *ctx, const char *e) {
+static int faulted = 0;
+static v6502_cpu *cpu;
+static a1pia *pia;
+
+static void fault(void *ctx, const char *e) {
 	(*(int *)ctx)++;
 }
 
-static void loadRomFile(v6502_memory *mem, const char *fname, uint16_t address) {
-	FILE *f = fopen(fname, "r");
-	
-	if (!f) {
-		fprintf(stderr, "Could not read from \"%s\"!\n", fname);
-		return;
-	}
-	
-	uint8_t byte;
-	uint16_t offset = 0;
-	
-	while (fread(&byte, 1, 1, f)) {
-		mem->bytes[address + (offset++)] = byte;
-	}
-	
-	fprintf(stderr, "loaded \"%s\" at 0x%04x\n", fname, address);
-	
-	fclose(f);
-}
+//static uint8_t romMirrorCallback(struct _v6502_memory *memory, uint16_t offset, int trap, void *context) {
+//	return memory->bytes[offset % ROM_SIZE];
+//}
 
-uint8_t romMirrorCallback(struct _v6502_memory *memory, uint16_t offset, int trap, void *context) {
-	return memory->bytes[offset % ROM_SIZE];
-}
-
-int main(int argc, const char * argv[])
-{
-	int faulted = 0;
-	
-	v6502_cpu *cpu = v6502_createCPU();
-	cpu->memory = v6502_createMemory(v6502_memoryStartCeiling + 1);
-	cpu->fault_callback = fault;
-	cpu->fault_context = &faulted;
-	
-	// Load Woz Monitor
-	for (uint16_t start = ROM_START;
-		 start < v6502_memoryStartCeiling && start >= ROM_START;
-		 start += ROM_SIZE + 1) {
-		loadRomFile(cpu->memory, "apple1.rom", start);
-		//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
-	}
-	
-	// Attach PIA
-	a1pia *pia = pia_create(cpu->memory);
-	
-	v6502_reset(cpu);
-	
+static void run(v6502_cpu *cpu) {
 	FILE *asmfile = fopen("runtime.s", "w");
+	pia_start(pia);
 	while (!faulted) {
 		dis6502_printAnnotatedInstruction(asmfile, cpu, cpu->pc);
 		v6502_step(cpu);
 		v6502_printCpuState(asmfile, cpu);
 	}
+	pia_stop(pia);
 	fclose(asmfile);
+}
+
+static const char *prompt() {
+	static char prompt[10];
+	snprintf(prompt, 10, "(0x%04x) ", cpu->pc);
+	return prompt;
+}
+
+int main(int argc, const char * argv[])
+{
+	cpu = v6502_createCPU();
+	cpu->memory = v6502_createMemory(v6502_memoryStartCeiling + 1);
+	cpu->fault_callback = fault;
+	cpu->fault_context = &faulted;
 	
+	v6502_breakpoint_list *breakpoint_list = v6502_createBreakpointList();
+
+	// Load Woz Monitor
+	for (uint16_t start = ROM_START;
+		 start < v6502_memoryStartCeiling && start >= ROM_START;
+		 start += ROM_SIZE + 1) {
+		v6502_loadFileAtAddress(cpu->memory, "apple1.rom", start);
+		//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
+	}
+	
+	// Attach PIA
+	pia = pia_create(cpu->memory);
+	
+	v6502_reset(cpu);
+	
+	int verbose = 0;
+	int commandLen;
+	HistEvent ev;
+	History *hist = history_init();
+	history(hist, &ev, H_SETSIZE, 100);
+	
+	EditLine *el = el_init("apple1", stdin, stdout, stderr);
+	el_set(el, EL_PROMPT, &prompt);
+	el_set(el, EL_SIGNAL, SIGWINCH);
+	el_set(el, EL_EDITOR, "emacs");
+	el_set(el, EL_HIST, history, hist);
+	
+	char *command = NULL;
+	while (!feof(stdin)) {
+		currentLineNum++;
+		
+		const char *in = el_gets(el, &commandLen);
+		if (!in) {
+			break;
+		}
+		
+		history(hist, &ev, H_ENTER, in);
+		command = realloc(command, commandLen + 1);
+		memcpy(command, in, commandLen);
+		
+		// Trim newline, always the last char
+		command[commandLen - 1] = '\0';
+		
+		if (command[0] == '\0') {
+			continue;
+		}
+		
+		if (v6502_handleDebuggerCommand(cpu, command, commandLen, breakpoint_list, run, &verbose)) {
+			continue;
+		}
+		else if (command[0] != ';') {
+			as6502_executeAsmLineOnCPU(cpu, command, strlen(command));
+		}
+	}
+	
+	v6502_destroyBreakpointList(breakpoint_list);
+	history_end(hist);
+	el_end(el);
+	free(command);
 	pia_destroy(pia);
 	v6502_destroyMemory(cpu->memory);
 	v6502_destroyCPU(cpu);
+	printf("\n");
+	return EXIT_SUCCESS;
 }

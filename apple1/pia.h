@@ -28,4 +28,7 @@ typedef struct {
 a1pia *pia_create(v6502_memory *mem);
 void pia_destroy(a1pia *pia);
 
+void pia_start(a1pia *pia);
+void pia_stop(a1pia *pia);
+
 #endif /* defined(__apple1__pia__) */
