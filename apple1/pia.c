@@ -87,7 +87,17 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 	}
 	
 	saveFreeze(memory, "freeze.ram");
+	
+	if (context->suspended) {
+		printf("Keyboard readiness register ($D011) trap read.\n");
+		printf("Press a key for input to keyboard register ($D010): ");
+		fflush(stdout);
+		crmode();
+	}
 	int c = getch();
+	if (context->suspended) {
+		printf("%c\r\n", c);
+	}
 	
 	if (c == '`') {
 		context->signalled++;
@@ -152,10 +162,12 @@ void pia_start(a1pia *pia) {
 	noecho();
 	nonl();
 	pia->signalled = 0;
+	pia->suspended = 0;
 	wrefresh(pia->screen);
 }
 
 void pia_stop(a1pia *pia) {
+	pia->suspended = 1;
 	pia->screen = NULL;
 	endwin();
 }

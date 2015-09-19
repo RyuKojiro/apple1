@@ -24,6 +24,7 @@ typedef struct {
 	v6502_memory *memory;
 	char buf;
 	int signalled;
+	int suspended;
 } a1pia;
 
 a1pia *pia_create(v6502_memory *mem);
