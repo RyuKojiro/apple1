@@ -165,6 +165,9 @@ void pia_start(a1pia *pia) {
 	pia->signalled = 0;
 	pia->suspended = 0;
 	wrefresh(pia->screen);
+	start_color();
+	init_pair(1, COLOR_GREEN, COLOR_BLACK);
+	attron(COLOR_PAIR(1) | A_BOLD);
 }
 
 void pia_stop(a1pia *pia) {
