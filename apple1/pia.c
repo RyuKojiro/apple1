@@ -161,6 +161,7 @@ void pia_start(a1pia *pia) {
 	crmode();
 	noecho();
 	nonl();
+	scrollok(pia->screen, YES);
 	pia->signalled = 0;
 	pia->suspended = 0;
 	wrefresh(pia->screen);
