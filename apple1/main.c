@@ -24,9 +24,11 @@
 #define ROM_START		0xF000
 #define ROM_SIZE		0x00FF
 #define RESET_VECTOR	0xFF00
+#define DEBUGGER_MESSAGE	" [ Hit ` for debugger ] "
 
 static v6502_cpu *cpu;
 static a1pia *pia;
+static int consoleMessageSeen;
 
 static void fault(void *ctx, const char *e) {
 	(*(int *)ctx)++;
@@ -43,6 +45,17 @@ static void run(v6502_cpu *cpu) {
 
 	FILE *asmfile = fopen("runtime.s", "w");
 	pia_start(pia);
+	
+	// This depends on the fact that pia_start will get curses up and going
+	if (!consoleMessageSeen) {
+		wmove(pia->screen, getmaxy(pia->screen) - 1, getmaxx(pia->screen) - sizeof(DEBUGGER_MESSAGE));
+		attron(A_REVERSE);
+		wprintw(pia->screen, DEBUGGER_MESSAGE);
+		attroff(A_REVERSE);
+		wmove(pia->screen, 0, 0);
+		consoleMessageSeen++;
+	}
+	
 	while (!faulted && !pia->signalled) {
 		dis6502_printAnnotatedInstruction(asmfile, cpu, cpu->pc);
 		v6502_step(cpu);
