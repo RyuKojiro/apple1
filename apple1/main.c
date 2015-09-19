@@ -63,11 +63,13 @@ int main(int argc, const char * argv[])
 	currentFileName = "apple1";
 
 	cpu = v6502_createCPU();
+	printf("Allocating 64k of memory...\n");
 	cpu->memory = v6502_createMemory(v6502_memoryStartCeiling + 1);
-	
+
 	v6502_breakpoint_list *breakpoint_list = v6502_createBreakpointList();
 
 	// Load Woz Monitor
+	printf("Loading ROM...\n");
 	for (uint16_t start = ROM_START;
 		start < v6502_memoryStartCeiling && start >= ROM_START;
 		start += ROM_SIZE + 1) {
@@ -76,10 +78,15 @@ int main(int argc, const char * argv[])
 	}
 	
 	// Attach PIA
+	printf("Initializing PIA...\n");
 	pia = pia_create(cpu->memory);
 	
+	printf("Resetting CPU...\n");
 	v6502_reset(cpu);
 	
+	printf("Running...\n");
+	run(cpu);
+
 	int verbose = 0;
 	int commandLen;
 	HistEvent ev;
