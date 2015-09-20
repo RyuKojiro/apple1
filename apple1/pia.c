@@ -122,18 +122,6 @@ uint8_t keyboardReadCharacterCallback(struct _v6502_memory *memory, uint16_t off
 	return 0;
 }
 
-static void _doCoolVideoStart(a1pia *pia) {
-	printf(ANSI_BGCOLOR_GREEN);
-	
-	for (int x = 0; x < 80*25; x++) {
-		printf(" ");
-	}
-	
-	printf(ANSI_COLOR_RESET);
-	fflush(stdout);
-	usleep(100000);
-}
-
 a1pia *pia_create(v6502_memory *mem) {
 	a1pia *pia = malloc(sizeof(a1pia));
 	pia->memory = mem;
@@ -144,7 +132,6 @@ a1pia *pia_create(v6502_memory *mem) {
 	v6502_map(mem, A1PIA_VIDEO_OUTPUT, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteCharCallback, pia);
 	v6502_map(mem, A1PIA_VIDEO_CRLF_REG, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteNewlineCallback, pia);
 
-//	_doCoolVideoStart(pia);
 	return pia;
 }
 
