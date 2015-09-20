@@ -11,6 +11,7 @@
 #include <as6502/color.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <assert.h>
 
 #define FIXME_I_SHOULDNT_BE_NULL NULL
 #define KEYBOARD_READY 0xFF // This just needs to meet the requirements of being a negative number in the eyes of the 6502
@@ -127,10 +128,10 @@ a1pia *pia_create(v6502_memory *mem) {
 	pia->memory = mem;
 	pia->screen = NULL;
 	
-	v6502_map(mem, A1PIA_KEYBOARD_INPUT, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia);
-	v6502_map(mem, A1PIA_KEYBOARD_CRLF_REG, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia);
-	v6502_map(mem, A1PIA_VIDEO_OUTPUT, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteCharCallback, pia);
-	v6502_map(mem, A1PIA_VIDEO_CRLF_REG, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteNewlineCallback, pia);
+	assert(v6502_map(mem, A1PIA_KEYBOARD_INPUT, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia));
+	assert(v6502_map(mem, A1PIA_KEYBOARD_CRLF_REG, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia));
+	assert(v6502_map(mem, A1PIA_VIDEO_OUTPUT, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteCharCallback, pia));
+	assert(v6502_map(mem, A1PIA_VIDEO_CRLF_REG, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteNewlineCallback, pia));
 
 	return pia;
 }
