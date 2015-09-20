@@ -136,6 +136,7 @@ int main(int argc, const char * argv[])
 			continue;
 		}
 		else if (command[0] != ';') {
+			currentLineText = command;
 			as6502_executeAsmLineOnCPU(cpu, command, strlen(command));
 		}
 	}
