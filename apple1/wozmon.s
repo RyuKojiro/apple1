@@ -33,7 +33,7 @@ RESET:          CLD             ; Clear decimal arithmetic mode.
                 STY DSP         ; Set it up.
                 LDA #$A7        ; KBD and DSP control register mask.
                 STA KBDCR       ; Enable interrupts, set CA1, CB1, for
-                STY DSPCR       ;  postitive edge sense/output mode.
+                STA DSPCR       ;  postitive edge sense/output mode.
 NOTCR:          CMP #$DF        ; "<-"?
                 BEQ BACKSAPCE   ; Yes.
                 CMP #$9B        ; ESC?
