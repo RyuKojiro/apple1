@@ -25,6 +25,9 @@ $(ROM): $(ROMSRC) $(AS)
 $(PROG): $(LIBV6502) $(LIBAS6502) $(LIBDIS6502) $(OBJS)
 	$(CC) $(OBJS) -o $(PROG) $(LDFLAGS)
 
+$(AS):
+	$(MAKE) -C $(LIBAS6502_DIR)
+
 $(LIBV6502):
 	$(MAKE) -C $(LIBV6502_DIR) lib
 
@@ -35,7 +38,7 @@ $(LIBDIS6502):
 	$(MAKE) -C $(LIBDIS6502_DIR) lib
 
 cleanlib:
-	rm -f $(LIBV6502) $(LIBV6502_OBJS)
+	$(MAKE) -C $(V6502_PREFIX) clean
 
 clean: cleanlib
 	rm -f $(PROG) $(ROM) $(OBJS)
