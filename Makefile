@@ -9,11 +9,18 @@ LIBAS6502=   $(LIBAS6502_DIR)/libas6502.a
 LIBDIS6502_DIR= $(V6502_PREFIX)/dis6502
 LIBDIS6502=   $(LIBDIS6502_DIR)/libdis6502.a
 
+AS=	$(LIBAS6502_DIR)/as6502
+ROM= apple1.rom
+ROMSRC= apple1/wozmon.s
+
 CFLAGS+=	-I$(V6502_PREFIX) -std=c99
 LDFLAGS+=	-ledit -lcurses -ldis6502 -las6502 -lv6502 -L$(LIBV6502_DIR) -L$(LIBAS6502_DIR) -L $(LIBDIS6502_DIR)
 OBJS=		$(SRCS:.c=.o)
 
-all: $(PROG)
+all: $(PROG) $(ROM)
+
+$(ROM): $(ROMSRC) $(AS)
+	$(AS) -o $(ROM) $(ROMSRC)
 
 $(PROG): $(LIBV6502) $(LIBAS6502) $(LIBDIS6502) $(OBJS)
 	$(CC) $(OBJS) -o $(PROG) $(LDFLAGS)
