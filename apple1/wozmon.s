@@ -153,6 +153,6 @@ ECHO:           BIT DSP         ; DA bit (B7) cleared yet?
                 RTS             ; Return.
 
 .byte $0000
-.byte $F000                     NMI
+.byte $0F00                     NMI
 .byte $FF00                     RESET
 .byte $0000                     IRQ
