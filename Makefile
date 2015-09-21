@@ -38,5 +38,5 @@ cleanlib:
 	rm -f $(LIBV6502) $(LIBV6502_OBJS)
 
 clean: cleanlib
-	rm -f $(PROG) $(OBJS)
+	rm -f $(PROG) $(ROM) $(OBJS)
 
