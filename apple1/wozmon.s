@@ -35,7 +35,7 @@ RESET:          CLD             ; Clear decimal arithmetic mode.
                 STA KBDCR       ; Enable interrupts, set CA1, CB1, for
                 STA DSPCR       ;  postitive edge sense/output mode.
 NOTCR:          CMP #$DF        ; "<-"?
-                BEQ BACKSAPCE   ; Yes.
+                BEQ BACKSPACE   ; Yes.
                 CMP #$9B        ; ESC?
                 BEQ ESCAPE      ; Yes.
                 INY             ; Advance text index.
@@ -79,7 +79,7 @@ NEXTHEX:        LDA IN,Y        ; Get character for hex test.
                 BCC DIG         ; Yes.
                 ADC #$88        ; Map letter "A"-"F" to $FA-FF.
                 CMP #$FA        ; Hex letter?
-                BCC NOHEX       ; No, character not hex.
+                BCC NOTHEX      ; No, character not hex.
 DIG:            ASL A
                 ASL A           ; Hex digit to MSD of A.
                 ASL A           ;
