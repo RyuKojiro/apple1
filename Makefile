@@ -43,3 +43,6 @@ cleanlib:
 clean: cleanlib
 	rm -f $(PROG) $(ROM) $(OBJS)
 
+.c.o:
+	$(CC) $(CFLAGS) -o $@ -c $<
+
