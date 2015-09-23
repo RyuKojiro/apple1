@@ -83,12 +83,8 @@ int main(int argc, const char * argv[])
 
 	// Load Woz Monitor
 	printf("Loading ROM...\n");
-	for (uint16_t start = ROM_START;
-		start < v6502_memoryStartCeiling && start >= ROM_START;
-		start += ROM_SIZE + 1) {
-		v6502_loadFileAtAddress(cpu->memory, "apple1.rom", start);
-		//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
-	}
+	v6502_loadFileAtAddress(cpu->memory, "apple1.rom", RESET_VECTOR);
+	//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
 	
 	// Attach PIA
 	printf("Initializing PIA...\n");
