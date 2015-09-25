@@ -29,6 +29,7 @@
 static v6502_cpu *cpu;
 static a1pia *pia;
 static int consoleMessageSeen;
+static as6502_symbol_table *table;
 
 static void fault(void *ctx, const char *e) {
 	(*(int *)ctx)++;
@@ -57,7 +58,7 @@ static void run(v6502_cpu *cpu) {
 	}
 	
 	while (!faulted && !pia->signalled) {
-		dis6502_printAnnotatedInstruction(asmfile, cpu, cpu->pc);
+		dis6502_printAnnotatedInstruction(asmfile, cpu, cpu->pc, table);
 		v6502_step(cpu);
 		v6502_printCpuState(asmfile, cpu);
 	}
@@ -80,7 +81,8 @@ int main(int argc, const char * argv[])
 	cpu->memory = v6502_createMemory(v6502_memoryStartCeiling + 1);
 
 	v6502_breakpoint_list *breakpoint_list = v6502_createBreakpointList();
-
+	table = as6502_createSymbolTable();
+	
 	// Load Woz Monitor
 	printf("Loading ROM...\n");
 	v6502_loadFileAtAddress(cpu->memory, "apple1.rom", RESET_VECTOR);
@@ -128,7 +130,7 @@ int main(int argc, const char * argv[])
 			continue;
 		}
 		
-		if (v6502_handleDebuggerCommand(cpu, command, commandLen, breakpoint_list, run, &verbose)) {
+		if (v6502_handleDebuggerCommand(cpu, command, commandLen, breakpoint_list, table, run, &verbose)) {
 			continue;
 		}
 		else if (command[0] != ';') {
@@ -137,6 +139,7 @@ int main(int argc, const char * argv[])
 		}
 	}
 	
+	as6502_destroySymbolTable(table);
 	v6502_destroyBreakpointList(breakpoint_list);
 	history_end(hist);
 	el_end(el);
