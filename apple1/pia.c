@@ -116,7 +116,9 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 uint8_t keyboardReadCharacterCallback(struct _v6502_memory *memory, uint16_t offset, int trap, a1pia *context) {
 	if (context->buf) {
 		uint8_t a = a1CharFromAsciiChar(context->buf);
-		context->buf = '\0';
+		if (trap) {
+			context->buf = '\0';
+		}
 		return a;
 	}
 	
