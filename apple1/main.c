@@ -88,6 +88,15 @@ int main(int argc, const char * argv[])
 	v6502_loadFileAtAddress(cpu->memory, "apple1.rom", RESET_VECTOR);
 	//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
 	
+	// Load debugger script
+	int verbose = 0;
+	FILE *file = fopen("apple1.dbg", "r");
+	if (file) {
+		printf("Loading debugger script...\n");
+		v6502_runDebuggerScript(cpu, file, breakpoint_list, table, run, &verbose);
+		fclose(file);
+	}
+	
 	// Attach PIA
 	printf("Initializing PIA...\n");
 	pia = pia_create(cpu->memory);
@@ -98,7 +107,6 @@ int main(int argc, const char * argv[])
 	printf("Running...\n");
 	run(cpu);
 
-	int verbose = 0;
 	int commandLen;
 	HistEvent ev;
 	History *hist = history_init();
