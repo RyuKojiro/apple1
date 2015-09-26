@@ -131,7 +131,30 @@ int main(int argc, const char * argv[])
 		}
 		
 		if (v6502_handleDebuggerCommand(cpu, command, commandLen, breakpoint_list, table, run, &verbose)) {
+			if (v6502_compareDebuggerCommand(command, commandLen, "help")) {
+				printf("woz                 Print relevant woz monitor parameters and registers.\n");
+			}
 			continue;
+		}
+		else if (v6502_compareDebuggerCommand(command, commandLen, "woz")) {
+			printf("KBD  0x%02x\n"
+				   "XAML 0x%02x\n"
+				   "XAMH 0x%02x\n"
+				   "STL  0x%02x\n"
+				   "STH  0x%02x\n"
+				   "L    0x%02x\n"
+				   "H    0x%02x\n"
+				   "YSAV 0x%02x\n"
+				   "MODE 0x%02x\n",
+				   v6502_read(cpu->memory, A1PIA_KEYBOARD_INPUT_REGISTER, NO),
+				   v6502_read(cpu->memory, 0x24, NO), // XAML
+				   v6502_read(cpu->memory, 0x25, NO), // XAMH
+				   v6502_read(cpu->memory, 0x26, NO), // STL
+				   v6502_read(cpu->memory, 0x27, NO), // STH
+				   v6502_read(cpu->memory, 0x28, NO), // L
+				   v6502_read(cpu->memory, 0x29, NO), // H
+				   v6502_read(cpu->memory, 0x2A, NO), // YSAV
+				   v6502_read(cpu->memory, 0x2B, NO));// MODE
 		}
 		else if (command[0] != ';') {
 			currentLineText = command;
