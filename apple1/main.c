@@ -30,6 +30,7 @@ static v6502_cpu *cpu;
 static a1pia *pia;
 static int consoleMessageSeen;
 static as6502_symbol_table *table;
+static v6502_breakpoint_list *breakpoint_list;
 
 static void fault(void *ctx, const char *e) {
 	(*(int *)ctx)++;
@@ -58,6 +59,13 @@ static void run(v6502_cpu *cpu) {
 	}
 	
 	while (!faulted && !pia->signalled) {
+		if (v6502_breakpointIsInList(breakpoint_list, cpu->pc)) {
+			pia_stop(pia);
+			fclose(asmfile);
+			printf("Hit breakpoint at 0x%02x.\n", cpu->pc);
+			return;
+		}
+
 		dis6502_printAnnotatedInstruction(asmfile, cpu, cpu->pc, table);
 		v6502_step(cpu);
 		v6502_printCpuState(asmfile, cpu);
@@ -80,7 +88,7 @@ int main(int argc, const char * argv[])
 	printf("Allocating 64k of memory...\n");
 	cpu->memory = v6502_createMemory(v6502_memoryStartCeiling + 1);
 
-	v6502_breakpoint_list *breakpoint_list = v6502_createBreakpointList();
+	breakpoint_list = v6502_createBreakpointList();
 	table = as6502_createSymbolTable();
 	
 	// Load Woz Monitor
