@@ -18,6 +18,7 @@
 #include <v6502/cpu.h>
 #include <v6502/mem.h>
 #include <as6502/error.h>
+#include <as6502/linectl.h>
 
 #include "pia.h"
 
@@ -31,6 +32,7 @@ static a1pia *pia;
 static int consoleMessageSeen;
 static as6502_symbol_table *table;
 static v6502_breakpoint_list *breakpoint_list;
+static int continuousMode;
 
 static void fault(void *ctx, const char *e) {
 	(*(int *)ctx)++;
@@ -46,7 +48,7 @@ static void run(v6502_cpu *cpu) {
 	cpu->fault_context = &faulted;
 
 	FILE *asmfile = fopen("runtime.s", "w");
-	pia_start(pia);
+	pia_start(pia, continuousMode);
 	
 	// This depends on the fact that pia_start will get curses up and going
 	if (!consoleMessageSeen) {
@@ -149,6 +151,7 @@ int main(int argc, const char * argv[])
 		if (v6502_handleDebuggerCommand(cpu, command, commandLen, breakpoint_list, table, run, &verbose)) {
 			if (v6502_compareDebuggerCommand(command, commandLen, "help")) {
 				printf("woz                 Print relevant woz monitor parameters and registers.\n");
+				printf("nonstop             Read or toggle nonstop mode. Nonstop mode is considerably less efficient, but may be required for some software that expects runtime to continue while simultaneously waiting for keyboard input.\n");
 			}
 			continue;
 		}
@@ -171,6 +174,17 @@ int main(int argc, const char * argv[])
 				   v6502_read(cpu->memory, 0x29, NO), // H
 				   v6502_read(cpu->memory, 0x2A, NO), // YSAV
 				   v6502_read(cpu->memory, 0x2B, NO));// MODE
+		}
+		else if (v6502_compareDebuggerCommand(command, commandLen, "nonstop")) {
+//			command = trimheadtospc(command, commandLen);
+//
+//			if(command[0]) {
+				printf("Nonstop mode %d -> %d\n", continuousMode, !continuousMode);
+				continuousMode = !continuousMode;
+//			}
+//			else {
+//				printf("Currently set to %d", continuousMode);
+//			}
 		}
 		else if (command[0] != ';') {
 			currentLineText = command;

@@ -143,11 +143,11 @@ void pia_destroy(a1pia *pia) {
 	free(pia);
 }
 
-void pia_start(a1pia *pia) {
+void pia_start(a1pia *pia, int continuous) {
 	if (!pia->screen) {
 		pia->screen = initscr();
 	}
-	//nodelay(stdscr, true);
+	nodelay(stdscr, continuous);
 	crmode();
 	noecho();
 	nonl();
