@@ -129,7 +129,8 @@ a1pia *pia_create(v6502_memory *mem) {
 	a1pia *pia = malloc(sizeof(a1pia));
 	pia->memory = mem;
 	pia->screen = NULL;
-	
+	pia->buf = '\0';
+
 	assert(v6502_map(mem, A1PIA_KEYBOARD_INPUT_REGISTER, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia));
 	assert(v6502_map(mem, A1PIA_KEYBOARD_READY_REGISTER, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia));
 	assert(v6502_map(mem, A1PIA_VIDEO_OUTPUT_REGISTER, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteCharCallback, pia));
