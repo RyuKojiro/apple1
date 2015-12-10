@@ -114,6 +114,14 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 }
 
 uint8_t keyboardReadCharacterCallback(struct _v6502_memory *memory, uint16_t offset, int trap, a1pia *context) {
+	// This means we are in the debugger, but the CPU actually stepped over an instruction (rather than a tool peeking at memory)
+	if (context->suspended && trap) {
+		printf("Keyboard register ($D010) read.\n");
+		printf("Buffered character was #$%02x, now empty.\n", a1CharFromAsciiChar(context->buf));
+		fflush(stdout);
+		crmode();
+	}
+
 	if (context->buf) {
 		uint8_t a = a1CharFromAsciiChar(context->buf);
 		if (trap) {
