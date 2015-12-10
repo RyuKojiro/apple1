@@ -49,7 +49,10 @@ static void run(v6502_cpu *cpu) {
 
 	FILE *asmfile = fopen("runtime.s", "w");
 	pia_start(pia, continuousMode);
-	
+
+	// Step once (since the PIA is now up) to escape debugger traps if we happened to be resumed from a breakpoint
+	v6502_step(cpu);
+
 	// This depends on the fact that pia_start will get curses up and going
 	if (!consoleMessageSeen) {
 		wmove(pia->screen, getmaxy(pia->screen) - 1, getmaxx(pia->screen) - sizeof(DEBUGGER_MESSAGE));
