@@ -33,6 +33,10 @@ void saveFreeze(a1pia *pia, const char *fname) {
 	fclose(f);
 }
 
+void loadFreeze(a1pia *pia, const char *fname) {
+	// TODO: implement me
+}
+
 char asciiCharFromCursesKey(int key) {
 	return (char)key;
 }

@@ -155,6 +155,8 @@ int main(int argc, const char * argv[])
 			if (v6502_compareDebuggerCommand(command, commandLen, "help")) {
 				printf("woz                 Print relevant woz monitor parameters and registers.\n");
 				printf("nonstop             Read or toggle nonstop mode. Nonstop mode is considerably less efficient, but may be required for some software that expects runtime to continue while simultaneously waiting for keyboard input.\n");
+				printf("freeze <filename>   Dump the entire contents of memory, and the current cpu state, into a file for later loading.\n");
+				printf("restore <filename>  Restore memory and cpu state from a freeze file.\n");
 			}
 			continue;
 		}
@@ -188,6 +190,26 @@ int main(int argc, const char * argv[])
 //			else {
 //				printf("Currently set to %d", continuousMode);
 //			}
+		}
+		else if (v6502_compareDebuggerCommand(command, commandLen, "freeze")) {
+			command = trimheadtospc(command, commandLen);
+
+			if(command[0]) {
+				saveFreeze(pia, command);
+			}
+			else {
+				printf("A filename is required to save freeze.\n");
+			}
+		}
+		else if (v6502_compareDebuggerCommand(command, commandLen, "restore")) {
+			command = trimheadtospc(command, commandLen);
+
+			if(command[0]) {
+				loadFreeze(pia, command);
+			}
+			else {
+				printf("A filename is required to load freeze.\n");
+			}
 		}
 		else if (command[0] != ';') {
 			currentLineText = command;
