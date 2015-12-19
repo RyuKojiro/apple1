@@ -18,7 +18,7 @@
 #define KEYBOARD_NOTREADY 0x00
 #define ANSI_BGCOLOR_GREEN   "\x1b[42;1m"
 
-void saveFreeze(v6502_memory *mem, const char *fname) {
+void saveFreeze(a1pia *pia, const char *fname) {
 	FILE *f = fopen(fname, "w");
 	if (!f) {
 		endwin();
@@ -26,7 +26,7 @@ void saveFreeze(v6502_memory *mem, const char *fname) {
 	}
 	
 	for (uint16_t offset = 0; offset < v6502_memoryStartCeiling; offset++) {
-		uint8_t byte = v6502_read(mem, offset, NO);
+		uint8_t byte = v6502_read(pia->cpu->memory, offset, NO);
 		fwrite(&byte, sizeof(uint8_t), 1, f);
 	}
 	
@@ -87,8 +87,6 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 		return KEYBOARD_READY;
 	}
 	
-	saveFreeze(memory, "freeze.ram");
-	
 	if (context->suspended) {
 		printf("Keyboard readiness register ($D011) trap read.\n");
 		printf("Press a key for input to keyboard register ($D010): ");
@@ -133,16 +131,16 @@ uint8_t keyboardReadCharacterCallback(struct _v6502_memory *memory, uint16_t off
 	return 0;
 }
 
-a1pia *pia_create(v6502_memory *mem) {
+a1pia *pia_create(v6502_cpu *cpu) {
 	a1pia *pia = malloc(sizeof(a1pia));
-	pia->memory = mem;
+	pia->cpu = cpu;
 	pia->screen = NULL;
 	pia->buf = '\0';
 
-	assert(v6502_map(mem, A1PIA_KEYBOARD_INPUT_REGISTER, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia));
-	assert(v6502_map(mem, A1PIA_KEYBOARD_READY_REGISTER, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia));
-	assert(v6502_map(mem, A1PIA_VIDEO_OUTPUT_REGISTER, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteCharCallback, pia));
-	assert(v6502_map(mem, A1PIA_VIDEO_ATTR_REGISTER, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteNewlineCallback, pia));
+	assert(v6502_map(cpu->memory, A1PIA_KEYBOARD_INPUT_REGISTER, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia));
+	assert(v6502_map(cpu->memory, A1PIA_KEYBOARD_READY_REGISTER, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia));
+	assert(v6502_map(cpu->memory, A1PIA_VIDEO_OUTPUT_REGISTER, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteCharCallback, pia));
+	assert(v6502_map(cpu->memory, A1PIA_VIDEO_ATTR_REGISTER, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteNewlineCallback, pia));
 
 	return pia;
 }

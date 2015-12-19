@@ -112,7 +112,7 @@ int main(int argc, const char * argv[])
 	
 	// Attach PIA
 	printf("Initializing PIA...\n");
-	pia = pia_create(cpu->memory);
+	pia = pia_create(cpu);
 	
 	printf("Resetting CPU...\n");
 	v6502_reset(cpu);
