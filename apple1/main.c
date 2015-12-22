@@ -22,6 +22,7 @@
 
 #include "pia.h"
 
+#define BASIC_LOAD_ADDRESS 0xE000
 #define ROM_START		0xF000
 #define ROM_SIZE		0x00FF
 #define RESET_VECTOR	0xFF00
@@ -110,6 +111,14 @@ int main(int argc, const char * argv[])
 		fclose(file);
 	}
 	
+	// Load integer BASIC 
+	file = fopen("apple1basic.bin", "r");
+	if (file) {
+		fclose(file);
+		printf("Loading BASIC tape at 0x%4x...\n", BASIC_LOAD_ADDRESS);
+		v6502_loadFileAtAddress(cpu->memory, "apple1basic.bin", BASIC_LOAD_ADDRESS);
+	}
+
 	// Attach PIA
 	printf("Initializing PIA...\n");
 	pia = pia_create(cpu);
