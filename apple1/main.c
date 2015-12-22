@@ -101,22 +101,22 @@ int main(int argc, const char * argv[])
 	printf("Loading ROM...\n");
 	v6502_loadFileAtAddress(cpu->memory, "apple1.rom", RESET_VECTOR);
 	//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
-	
+
+	// Load integer BASIC 
+	FILE *file = fopen("apple1basic.bin", "r");
+	if (file) {
+		fclose(file);
+		printf("Loading BASIC...\n");
+		v6502_loadFileAtAddress(cpu->memory, "apple1basic.bin", BASIC_LOAD_ADDRESS);
+	}
+
 	// Load debugger script
 	int verbose = 0;
-	FILE *file = fopen("apple1.dbg", "r");
+	file = fopen("apple1.dbg", "r");
 	if (file) {
-		printf("Loading debugger script...\n");
+		printf("Executing debugger script...\n");
 		v6502_runDebuggerScript(cpu, file, breakpoint_list, table, run, &verbose);
 		fclose(file);
-	}
-	
-	// Load integer BASIC 
-	file = fopen("apple1basic.bin", "r");
-	if (file) {
-		fclose(file);
-		printf("Loading BASIC tape at 0x%4x...\n", BASIC_LOAD_ADDRESS);
-		v6502_loadFileAtAddress(cpu->memory, "apple1basic.bin", BASIC_LOAD_ADDRESS);
 	}
 
 	// Attach PIA
