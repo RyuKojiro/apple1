@@ -72,9 +72,9 @@ static void run(v6502_cpu *cpu) {
 			return;
 		}
 
-		dis6502_printAnnotatedInstruction(asmfile, cpu, cpu->pc, table);
+		//dis6502_printAnnotatedInstruction(asmfile, cpu, cpu->pc, table);
 		v6502_step(cpu);
-		v6502_printCpuState(asmfile, cpu);
+		//v6502_printCpuState(asmfile, cpu);
 	}
 	pia_stop(pia);
 	fclose(asmfile);
@@ -93,6 +93,7 @@ int main(int argc, const char * argv[])
 	cpu = v6502_createCPU();
 	printf("Allocating 64k of memory...\n");
 	cpu->memory = v6502_createMemory(v6502_memoryStartCeiling + 1);
+	cpu->memory->mapCacheEnabled = YES;
 
 	breakpoint_list = v6502_createBreakpointList();
 	table = as6502_createSymbolTable();
