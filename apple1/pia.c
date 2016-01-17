@@ -24,17 +24,51 @@ void saveFreeze(a1pia *pia, const char *fname) {
 		endwin();
 		fprintf(stderr, "Couldn't open %s for writing\n", fname);
 	}
-	
+
+	// See header for a format description.
 	for (uint16_t offset = 0; offset < v6502_memoryStartCeiling; offset++) {
 		uint8_t byte = v6502_read(pia->cpu->memory, offset, NO);
 		fwrite(&byte, sizeof(uint8_t), 1, f);
 	}
-	
+
+	uint8_t pcHigh = pia->cpu->pc >> 8;
+	fwrite(&pia->cpu->pc, sizeof(char), 1, f); // Low
+	fwrite(&pcHigh, sizeof(char), 1, f); // High
+	fwrite(&pia->cpu->ac, sizeof(char), 1, f);
+	fwrite(&pia->cpu->x, sizeof(char), 1, f);
+	fwrite(&pia->cpu->y, sizeof(char), 1, f);
+	fwrite(&pia->cpu->sr, sizeof(char), 1, f);
+	fwrite(&pia->cpu->sp, sizeof(char), 1, f);
+
 	fclose(f);
 }
 
 void loadFreeze(a1pia *pia, const char *fname) {
-	// TODO: implement me
+	FILE *f = fopen(fname, "r");
+	if (!f) {
+		endwin();
+		fprintf(stderr, "Couldn't open %s for reading\n", fname);
+	}
+
+	// See header for a format description.
+	for (uint16_t offset = 0; offset < v6502_memoryStartCeiling; offset++) {
+		uint8_t byte;
+		fread(&byte, sizeof(uint8_t), 1, f);
+		pia->cpu->memory->bytes[offset] = byte;
+	}
+
+	uint8_t pcLow, pcHigh;
+	fread(&pcLow, sizeof(char), 1, f); // Low
+	fwrite(&pcHigh, sizeof(char), 1, f); // High
+	pia->cpu->pc = pcLow | (pcHigh << 8);
+
+	fread(&pia->cpu->ac, sizeof(char), 1, f);
+	fread(&pia->cpu->x, sizeof(char), 1, f);
+	fread(&pia->cpu->y, sizeof(char), 1, f);
+	fread(&pia->cpu->sr, sizeof(char), 1, f);
+	fread(&pia->cpu->sp, sizeof(char), 1, f);
+
+	fclose(f);
 }
 
 char asciiCharFromCursesKey(int key) {

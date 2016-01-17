@@ -38,7 +38,7 @@ void pia_stop(a1pia *pia);
 
 /* The freeze format is as follows:
  * 0x00000-0x0FFFF: The contents of memory
- * 0x10001-0x10002: CPU Program Counter
+ * 0x10001-0x10002: CPU Program Counter (Network byte order)
  *         0x10003: CPU Accumulator
  *         0x10004: CPU X Register
  *         0x10005: CPU Y Register
