@@ -100,7 +100,9 @@ int main(int argc, const char * argv[])
 	
 	// Load Woz Monitor
 	printf("Loading ROM...\n");
-	v6502_loadFileAtAddress(cpu->memory, "apple1.rom", RESET_VECTOR);
+	if (!v6502_loadFileAtAddress(cpu->memory, "apple1.rom", RESET_VECTOR)) {
+		return EXIT_FAILURE;
+	}
 	//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
 
 	// Load integer BASIC 
