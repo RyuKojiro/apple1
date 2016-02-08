@@ -204,20 +204,20 @@ int main(int argc, const char * argv[])
 //			}
 		}
 		else if (v6502_compareDebuggerCommand(command, commandLen, "freeze")) {
-			command = trimheadtospc(command, commandLen);
+			char *trimmedCommand = trimheadtospc(command, commandLen);
 
-			if(command[0]) {
-				saveFreeze(pia, command);
+			if(trimmedCommand[0]) {
+				saveFreeze(pia, trimmedCommand);
 			}
 			else {
 				printf("A filename is required to save freeze.\n");
 			}
 		}
 		else if (v6502_compareDebuggerCommand(command, commandLen, "restore")) {
-			command = trimheadtospc(command, commandLen);
+			char *trimmedCommand = trimheadtospc(command, commandLen);
 
-			if(command[0]) {
-				loadFreeze(pia, command);
+			if(trimmedCommand[0]) {
+				loadFreeze(pia, trimmedCommand);
 			}
 			else {
 				printf("A filename is required to load freeze.\n");
