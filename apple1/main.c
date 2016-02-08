@@ -197,9 +197,9 @@ int main(int argc, const char * argv[])
 				   v6502_read(cpu->memory, 0x2B, NO));// MODE
 		}
 		else if (v6502_compareDebuggerCommand(command, commandLen, "nonstop")) {
-//			command = trimheadtospc(command, commandLen);
+//			char *trimmedCommand = trimheadtospc(command, commandLen);
 //
-//			if(command[0]) {
+//			if(trimmedCommand[0]) {
 				printf("Nonstop mode %d -> %d\n", continuousMode, !continuousMode);
 				continuousMode = !continuousMode;
 //			}
