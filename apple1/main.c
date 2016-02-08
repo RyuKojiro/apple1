@@ -22,10 +22,10 @@
 
 #include "pia.h"
 
-#define BASIC_LOAD_ADDRESS 0xE000
-#define ROM_START		0xF000
-#define ROM_SIZE		0x00FF
-#define RESET_VECTOR	0xFF00
+#define BASIC_LOAD_ADDRESS	0xE000
+#define ROM_START			0xF000
+#define ROM_SIZE			0x00FF
+#define RESET_VECTOR		0xFF00
 #define DEBUGGER_MESSAGE	" [ Hit ` for debugger ] "
 
 static v6502_cpu *cpu;
