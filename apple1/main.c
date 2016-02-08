@@ -28,6 +28,10 @@
 #define RESET_VECTOR		0xFF00
 #define DEBUGGER_MESSAGE	" [ Hit ` for debugger ] "
 
+#define DEFAULT_FILENAME_ROM	"apple1.rom"
+#define DEFAULT_FILENAME_BASIC	"apple1basic.bin"
+#define DEFAULT_FILENAME_DEBUG	"apple1.dbg"
+
 static v6502_cpu *cpu;
 static a1pia *pia;
 static int consoleMessageSeen;
@@ -100,22 +104,22 @@ int main(int argc, const char * argv[])
 	
 	// Load Woz Monitor
 	printf("Loading ROM...\n");
-	if (!v6502_loadFileAtAddress(cpu->memory, "apple1.rom", RESET_VECTOR)) {
+	if (!v6502_loadFileAtAddress(cpu->memory, DEFAULT_FILENAME_ROM, RESET_VECTOR)) {
 		return EXIT_FAILURE;
 	}
 	//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
 
 	// Load integer BASIC 
-	FILE *file = fopen("apple1basic.bin", "r");
+	FILE *file = fopen(DEFAULT_FILENAME_BASIC, "r");
 	if (file) {
 		fclose(file);
 		printf("Loading BASIC...\n");
-		v6502_loadFileAtAddress(cpu->memory, "apple1basic.bin", BASIC_LOAD_ADDRESS);
+		v6502_loadFileAtAddress(cpu->memory, DEFAULT_FILENAME_BASIC, BASIC_LOAD_ADDRESS);
 	}
 
 	// Load debugger script
 	int verbose = 0;
-	file = fopen("apple1.dbg", "r");
+	file = fopen(DEFAULT_FILENAME_DEBUG, "r");
 	if (file) {
 		printf("Executing debugger script...\n");
 		v6502_runDebuggerScript(cpu, file, breakpoint_list, table, run, &verbose);
