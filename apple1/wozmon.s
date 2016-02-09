@@ -63,7 +63,7 @@ BLSKIP:         INY             ; Advance text index.
 NEXTITEM:       LDA IN,Y        ; Get character.
                 CMP #$8D        ; CR?
                 BEQ GETLINE     ; Yes, done this line.
-                CMP #$A3        ; "."?
+                CMP #$AE        ; "."?
                 BCC BLSKIP      ; Skip delimiter.
                 BEQ SETMODE     ; Set BLOCK XAM mode.
                 CMP #$BA        ; ":"?
