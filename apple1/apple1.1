@@ -1,0 +1,73 @@
+.\" Modified from man(1) of FreeBSD, the NetBSD mdoc.template and mdoc.samples
+.\" See man mdoc for the short list of editing options
+.Dd January 26, 2016     \" DATE
+.Dt APPLE1 1           \" Program name and manual section number
+.Os Darwin
+.Sh NAME                 \" Section Header - required - don't modify
+.Nm apple1
+.Nd Apple 1 Emulator
+.Sh DESCRIPTION          \" Section Header - required - don't modify
+Currently
+.Nm
+takes no arguments. All files are expected to be in place at runtime, and all user interaction happens after boot.
+.Sh RUNNING PROGRAMS
+The original Apple 1 was only capable of loading things via an audio cassette tape drive, or via hexadecimal typed into the keyboard by hand.
+.Pp
+If you have assembly source, you can assemble it using as6502, then load the binary blob into memory (see: BINARIES).
+.Pp
+If you have assembled source, or a binary dump of tape data, you can also load it by following the steps in the BINARIES section.
+.Pp
+If you have assembled source, in plaintext hex, you can load it by following the instructions detailed in the HEX section.
+.Pp
+If you have an audio file recording of a cassette tape, you must first convert it to a binary blob for loading.
+.Sh BINARIES
+The simplest way to load binary data in a flat file is to drop into the debugger, using the grave key, and type ``load <file> <addr>'' into the debugger.
+.Pp
+After the debugger has loaded the file into memory, you can type ``run'' to jump back into emulation. Next, enter the hex address that you loaded the binary at, followed by an ``R'' character, for ``run''. Hit enter and your program should begin executing.
+.Sh HEX
+To load assembled hex data, you can just paste it into the terminal running
+.Nm
+, just as you would a serial terminal to most modern Apple 1 clones. The expected format for the Woz Monitor (as documented in the original Apple 1 Operation Manual) is as follows:
+.Pp
+.Bl -tag -width "0300: A2 58 BD 80 04 20 EF FF" -compact
+.It 0300: A2 58 BD 80 04 20 EF FF
+.It : 85 BF EA EA A2 00 BD E6
+.It : CA 10 F7 20 E0 05 29 03
+.El
+.Pp
+Each subsequent line starting with a colon is a continuation of the insertion. In this example, the 0xCA byte will reside at memory location 0x0310.
+.Pp
+Some files will have every line's address specified, as seen below. This will also work.
+.Pp
+.Bl -tag -width "0300: A2 58 BD 80 04 20 EF FF" -compact
+.It 0380: FF FF FF FF FF FF FF FF
+.It 0388: FF FF FF FF FF FF FF FF
+.It 0390: FF FF FF FF FF FF FF FF
+.El
+.Sh FILES                \" Files used or created by the program
+.Bl -tag -width "apple1basic.bin" -compact
+.It Pa apple1.rom
+The Woz Monitor ROM, loaded at 0xFF00.
+.It Pa apple1basic.bin
+BASIC interpreter tape binary dump, loaded at 0xE000. Jump to BASIC from the Woz monitor with ``E000R''.
+.It Pa apple1.dbg
+Debugger script loaded at start. Every line in this file is executed as a debugger command to the v6502 debugger. This is particularly useful for things like loading symbol tables on boot.
+.El                      \" Ends the list
+.\" .Sh DIAGNOSTICS       \" May not be needed
+.\" .Bl -diag
+.\" .It Diagnostic Tag
+.\" Diagnostic informtion here.
+.\" .It Diagnostic Tag
+.\" Diagnostic informtion here.
+.\" .El
+.Sh SEE ALSO
+.\" List links in ascending order by section, alphabetically within a section.
+.\" Please do not reference files that do not exist without filing a bug report
+.Xr as6502 1 ,
+.Xr v6502 1
+.\" .Sh STANDARDS       \" Standards relating to command being described
+.\" .Sh HISTORY         \" Document history if command behaves uniquely
+.\" .Sh AUTHORS         \" A list of authors of the program
+.\" .An John Doe        \" Some author
+.\" .An Jane Doe        \" Some other author
+.\" .Sh BUGS            \" Document known, unremedied bugs
