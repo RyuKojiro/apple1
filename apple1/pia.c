@@ -131,9 +131,27 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 		fflush(stdout);
 		crmode();
 	}
+	else {
+		int x, y;
+		getyx(context->screen, y, x);
+		wmove(context->screen, 0, getmaxx(context->screen) - 1);
+		attroff(A_REVERSE);
+		wprintw(context->screen, " ");
+		wmove(context->screen, y, x);
+	}
+
 	int c = getch();
 	if (context->suspended) {
 		printf("%c\r\n", c);
+	}
+	else {
+		int x, y;
+		getyx(context->screen, y, x);
+		wmove(context->screen, 0, getmaxx(context->screen) - 1);
+		attron(A_REVERSE);
+		wprintw(context->screen, "!");
+		attroff(A_REVERSE);
+		wmove(context->screen, y, x);
 	}
 	
 	if (c == '`') {
