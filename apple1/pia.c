@@ -32,13 +32,13 @@ void saveFreeze(a1pia *pia, const char *fname) {
 	}
 
 	uint8_t pcHigh = pia->cpu->pc >> 8;
-	fwrite(&pia->cpu->pc, sizeof(char), 1, f); // Low
-	fwrite(&pcHigh, sizeof(char), 1, f); // High
-	fwrite(&pia->cpu->ac, sizeof(char), 1, f);
-	fwrite(&pia->cpu->x, sizeof(char), 1, f);
-	fwrite(&pia->cpu->y, sizeof(char), 1, f);
-	fwrite(&pia->cpu->sr, sizeof(char), 1, f);
-	fwrite(&pia->cpu->sp, sizeof(char), 1, f);
+	fwrite(&pia->cpu->pc, 1, 1, f); // Low
+	fwrite(&pcHigh,       1, 1, f); // High
+	fwrite(&pia->cpu->ac, 1, 1, f);
+	fwrite(&pia->cpu->x,  1, 1, f);
+	fwrite(&pia->cpu->y,  1, 1, f);
+	fwrite(&pia->cpu->sr, 1, 1, f);
+	fwrite(&pia->cpu->sp, 1, 1, f);
 
 	fclose(f);
 }
@@ -58,15 +58,15 @@ void loadFreeze(a1pia *pia, const char *fname) {
 	}
 
 	uint8_t pcLow, pcHigh;
-	fread(&pcLow, sizeof(char), 1, f); // Low
-	fwrite(&pcHigh, sizeof(char), 1, f); // High
+	fread(&pcLow,        1, 1, f); // Low
+	fwrite(&pcHigh,      1, 1, f); // High
 	pia->cpu->pc = pcLow | (pcHigh << 8);
 
-	fread(&pia->cpu->ac, sizeof(char), 1, f);
-	fread(&pia->cpu->x, sizeof(char), 1, f);
-	fread(&pia->cpu->y, sizeof(char), 1, f);
-	fread(&pia->cpu->sr, sizeof(char), 1, f);
-	fread(&pia->cpu->sp, sizeof(char), 1, f);
+	fread(&pia->cpu->ac, 1, 1, f);
+	fread(&pia->cpu->x,  1, 1, f);
+	fread(&pia->cpu->y,  1, 1, f);
+	fread(&pia->cpu->sr, 1, 1, f);
+	fread(&pia->cpu->sp, 1, 1, f);
 
 	fclose(f);
 }
