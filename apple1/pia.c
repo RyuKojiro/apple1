@@ -17,6 +17,8 @@
 #define KEYBOARD_READY				0xFF // This just needs to meet the requirements of being a negative number in the eyes of the 6502
 #define KEYBOARD_NOTREADY			0x00
 #define ANSI_BGCOLOR_GREEN			"\x1b[42;1m"
+#define CURSES_BACKSPACE			0x7F
+#define A1_BACKSPACE				0xDF
 
 void saveFreeze(a1pia *pia, const char *fname) {
 	FILE *f = fopen(fname, "w");
@@ -71,15 +73,23 @@ void loadFreeze(a1pia *pia, const char *fname) {
 	fclose(f);
 }
 
-char asciiCharFromCursesKey(int key) {
-	return (char)key;
+unsigned char asciiCharFromCursesKey(int key) {
+	return (unsigned char)key;
 }
 
-char asciiCharFromA1Char(uint8_t c) {
-	return (char)c & ~0x80;
+unsigned char asciiCharFromA1Char(uint8_t c) {
+	if (c == A1_BACKSPACE) {
+		return CURSES_BACKSPACE;
+	}
+
+	return (unsigned char)c & ~0x80;
 }
 
-uint8_t a1CharFromAsciiChar(char c) {
+uint8_t a1CharFromAsciiChar(unsigned char c) {
+	if (c == CURSES_BACKSPACE) {
+		return A1_BACKSPACE;
+	}
+
 	if (c >= 'a' && c <= 'z') {
 		c -= 0x20;
 	}
@@ -89,14 +99,14 @@ uint8_t a1CharFromAsciiChar(char c) {
 
 void videoWriteCharCallback(struct _v6502_memory *memory, uint16_t offset, uint8_t value, a1pia *context) {
 	if (value) {
-		char c = asciiCharFromA1Char(value);
+		unsigned char c = asciiCharFromA1Char(value);
 		if (c == '\r') {
 			waddch(context->screen, '\n');
 		}
-		if (c == 0x7f) {
+		if (c == CURSES_BACKSPACE) {
 			int y, x;
 			getyx(context->screen, y, x);
-			if (x < 0) {
+			if (x > 0) {
 				move(y, x-1);
 			}
 			delch();
@@ -140,7 +150,7 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 		wmove(context->screen, y, x);
 	}
 
-	int c = getch();
+	int c = wgetch(context->screen);
 	if (context->suspended) {
 		printf("%c\r\n", c);
 	}
