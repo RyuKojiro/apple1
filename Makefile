@@ -1,5 +1,5 @@
-PROG=		a1
-SRCS=		apple1/main.c apple1/pia.c v6502/v6502/log.c v6502/v6502/debugger.c v6502/v6502/breakpoint.c
+PROG=		apple1
+SRCS=		src/main.c src/pia.c v6502/v6502/log.c v6502/v6502/debugger.c v6502/v6502/breakpoint.c
 
 V6502_PREFIX= v6502
 LIBV6502_DIR=	$(V6502_PREFIX)/v6502
@@ -11,7 +11,7 @@ LIBDIS6502=   $(LIBDIS6502_DIR)/libdis6502.a
 
 AS=	$(LIBAS6502_DIR)/as6502
 ROM= apple1.rom
-ROMSRC= apple1/wozmon.s
+ROMSRC= src/wozmon.s
 
 CFLAGS+=	-I$(V6502_PREFIX) -std=c99
 LDFLAGS+=	-ledit -lcurses -ldis6502 -las6502 -lv6502 -L$(LIBV6502_DIR) -L$(LIBAS6502_DIR) -L $(LIBDIS6502_DIR)
