@@ -146,6 +146,8 @@ int main(int argc, const char * argv[])
 	el_set(el, EL_SIGNAL, SIGWINCH);
 	el_set(el, EL_EDITOR, "emacs");
 	el_set(el, EL_HIST, history, hist);
+	el_set(el, EL_ADDFN, "tab-complete", "Tab completion", v6502_completeDebuggerCommand);
+	el_set(el, EL_BIND, "\t", "tab-complete");
 	
 	char *command = NULL;
 	while (!feof(stdin)) {
