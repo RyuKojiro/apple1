@@ -1,0 +1,3 @@
+[submodule "v6502"]
+	path = v6502
+	url = https://github.com/RyuKojiro/v6502.git
