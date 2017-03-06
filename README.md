@@ -20,3 +20,6 @@ It even has a built-in machine debugger:
 
 # Running
 `./apple1`
+
+For more documentation, check the included manpage:
+`man src/apple1.1`
