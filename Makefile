@@ -25,3 +25,6 @@ $(AS):
 
 clean:
 	rm -f $(PROG) $(ROM) $(OBJS)
+	make -C $(V6502_PREFIX) clean
+
+include v6502/libtargets.mk
