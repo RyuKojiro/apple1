@@ -14,11 +14,11 @@
 #include <assert.h>
 
 #define FIXME_I_SHOULDNT_BE_NULL	NULL
-#define KEYBOARD_READY				0xFF // This just needs to meet the requirements of being a negative number in the eyes of the 6502
-#define KEYBOARD_NOTREADY			0x00
-#define ANSI_BGCOLOR_GREEN			"\x1b[42;1m"
-#define CURSES_BACKSPACE			0x7F
-#define A1_BACKSPACE				0xDF
+#define KEYBOARD_READY     0xFF // This just needs to meet the requirements of being a negative number in the eyes of the 6502
+#define KEYBOARD_NOTREADY  0x00
+#define ANSI_BGCOLOR_GREEN "\x1b[42;1m"
+#define CURSES_BACKSPACE   0x7F
+#define A1_BACKSPACE       0xDF
 
 void saveFreeze(a1pia *pia, const char *fname) {
 	FILE *f = fopen(fname, "w");

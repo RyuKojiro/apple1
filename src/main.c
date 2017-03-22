@@ -22,15 +22,16 @@
 
 #include "pia.h"
 
-#define BASIC_LOAD_ADDRESS	0xE000
-#define ROM_START			0xF000
-#define ROM_SIZE			0x00FF
-#define RESET_VECTOR		0xFF00
-#define DEBUGGER_MESSAGE	" [ Hit ` for debugger ] "
+#define BASIC_LOAD_ADDRESS 0xE000
+#define ROM_START          0xF000
+#define ROM_SIZE           0x00FF
+#define RESET_VECTOR       0xFF00
 
-#define DEFAULT_FILENAME_ROM	"apple1.rom"
-#define DEFAULT_FILENAME_BASIC	"apple1basic.bin"
-#define DEFAULT_FILENAME_DEBUG	"apple1.dbg"
+#define DEBUGGER_MESSAGE   " [ Hit ` for debugger ] "
+
+#define DEFAULT_FILENAME_ROM   "apple1.rom"
+#define DEFAULT_FILENAME_BASIC "apple1basic.bin"
+#define DEFAULT_FILENAME_DEBUG "apple1.dbg"
 
 static v6502_cpu *cpu;
 static a1pia *pia;
