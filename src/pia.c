@@ -13,7 +13,6 @@
 #include <unistd.h>
 #include <assert.h>
 
-#define FIXME_I_SHOULDNT_BE_NULL	NULL
 #define KEYBOARD_READY     0xFF // This just needs to meet the requirements of being a negative number in the eyes of the 6502
 #define KEYBOARD_NOTREADY  0x00
 #define ANSI_BGCOLOR_GREEN "\x1b[42;1m"
@@ -205,8 +204,8 @@ a1pia *pia_create(v6502_cpu *cpu) {
 
 	assert(v6502_map(cpu->memory, A1PIA_KEYBOARD_INPUT_REGISTER, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia));
 	assert(v6502_map(cpu->memory, A1PIA_KEYBOARD_READY_REGISTER, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia));
-	assert(v6502_map(cpu->memory, A1PIA_VIDEO_OUTPUT_REGISTER, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteCharCallback, pia));
-	assert(v6502_map(cpu->memory, A1PIA_VIDEO_ATTR_REGISTER, 1, FIXME_I_SHOULDNT_BE_NULL, (v6502_writeFunction *)videoWriteNewlineCallback, pia));
+	assert(v6502_map(cpu->memory, A1PIA_VIDEO_OUTPUT_REGISTER, 1, NULL, (v6502_writeFunction *)videoWriteCharCallback, pia));
+	assert(v6502_map(cpu->memory, A1PIA_VIDEO_ATTR_REGISTER, 1, NULL, (v6502_writeFunction *)videoWriteNewlineCallback, pia));
 
 	return pia;
 }
