@@ -33,7 +33,8 @@ void saveFreeze(a1pia *pia, const char *fname) {
 	}
 
 	uint8_t pcHigh = pia->cpu->pc >> 8;
-	fwrite(&pia->cpu->pc, 1, 1, f); // Low
+	uint8_t pcLow = pia->cpu->pc & 0xFF;
+	fwrite(&pcLow,        1, 1, f); // Low
 	fwrite(&pcHigh,       1, 1, f); // High
 	fwrite(&pia->cpu->ac, 1, 1, f);
 	fwrite(&pia->cpu->x,  1, 1, f);
@@ -60,7 +61,7 @@ void loadFreeze(a1pia *pia, const char *fname) {
 
 	uint8_t pcLow, pcHigh;
 	fread(&pcLow,        1, 1, f); // Low
-	fwrite(&pcHigh,      1, 1, f); // High
+	fread(&pcHigh,       1, 1, f); // High
 	pia->cpu->pc = pcLow | (pcHigh << 8);
 
 	fread(&pia->cpu->ac, 1, 1, f);
