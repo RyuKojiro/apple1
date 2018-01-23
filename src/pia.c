@@ -93,7 +93,7 @@ uint8_t a1CharFromAsciiChar(unsigned char c) {
 	if (c >= 'a' && c <= 'z') {
 		c -= 0x20;
 	}
-	
+
 	return (char)c | 0x80;
 }
 
@@ -130,11 +130,11 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 	if (!trap) {
 		return 0xbf;
 	}
-	
+
 	if (context->buf) {
 		return KEYBOARD_READY;
 	}
-	
+
 	if (context->suspended) {
 		printf("Keyboard readiness register ($D011) trap read.\n");
 		printf("Press a key for input to keyboard register ($D010): ");
@@ -163,17 +163,17 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 		attroff(A_REVERSE);
 		wmove(context->screen, y, x);
 	}
-	
+
 	if (c == '`') {
 		context->signalled++;
 		return KEYBOARD_NOTREADY;
 	}
-	
+
 	if (c != ERR) {
 		context->buf = asciiCharFromCursesKey(c);
 		return KEYBOARD_READY;
 	}
-	
+
 	return KEYBOARD_NOTREADY;
 }
 
@@ -193,7 +193,7 @@ uint8_t keyboardReadCharacterCallback(struct _v6502_memory *memory, uint16_t off
 		}
 		return a;
 	}
-	
+
 	return 0;
 }
 

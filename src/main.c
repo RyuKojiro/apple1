@@ -68,7 +68,7 @@ static void run(v6502_cpu *cpu) {
 		wmove(pia->screen, 0, 0);
 		consoleMessageSeen++;
 	}
-	
+
 	while (!faulted && !pia->signalled) {
 		if (v6502_breakpointIsInList(breakpoint_list, cpu->pc)) {
 			pia_stop(pia);
@@ -91,8 +91,7 @@ static const char *prompt() {
 	return prompt;
 }
 
-int main(int argc, const char * argv[])
-{
+int main(int argc, const char *argv[]) {
 	currentFileName = "apple1";
 
 	cpu = v6502_createCPU();
@@ -102,7 +101,7 @@ int main(int argc, const char * argv[])
 
 	breakpoint_list = v6502_createBreakpointList();
 	table = as6502_createSymbolTable();
-	
+
 	// Load Woz Monitor
 	printf("Loading ROM...\n");
 	if (!v6502_loadFileAtAddress(cpu->memory, DEFAULT_FILENAME_ROM, RESET_VECTOR)) {
@@ -110,7 +109,7 @@ int main(int argc, const char * argv[])
 	}
 	//v6502_map(cpu->memory, start, ROM_SIZE, romMirrorCallback, NULL, NULL);
 
-	// Load integer BASIC 
+	// Load integer BASIC
 	FILE *file = fopen(DEFAULT_FILENAME_BASIC, "r");
 	if (file) {
 		fclose(file);
@@ -130,10 +129,10 @@ int main(int argc, const char * argv[])
 	// Attach PIA
 	printf("Initializing PIA...\n");
 	pia = pia_create(cpu);
-	
+
 	printf("Resetting CPU...\n");
 	v6502_reset(cpu);
-	
+
 	printf("Running...\n");
 	run(cpu);
 
@@ -141,7 +140,7 @@ int main(int argc, const char * argv[])
 	HistEvent ev;
 	History *hist = history_init();
 	history(hist, &ev, H_SETSIZE, 100);
-	
+
 	EditLine *el = el_init(currentFileName, stdin, stdout, stderr);
 	el_set(el, EL_PROMPT, &prompt);
 	el_set(el, EL_SIGNAL, SIGWINCH);
@@ -149,27 +148,27 @@ int main(int argc, const char * argv[])
 	el_set(el, EL_HIST, history, hist);
 	el_set(el, EL_ADDFN, "tab-complete", "Tab completion", v6502_completeDebuggerCommand);
 	el_set(el, EL_BIND, "\t", "tab-complete", NULL);
-	
+
 	char *command = NULL;
 	while (!feof(stdin)) {
 		currentLineNum++;
-		
+
 		const char *in = el_gets(el, &commandLen);
 		if (!in) {
 			break;
 		}
-		
+
 		history(hist, &ev, H_ENTER, in);
 		command = realloc(command, commandLen + 1);
 		memcpy(command, in, commandLen);
-		
+
 		// Trim newline, always the last char
 		command[commandLen - 1] = '\0';
-		
+
 		if (command[0] == '\0') {
 			continue;
 		}
-		
+
 		if (v6502_handleDebuggerCommand(cpu, command, commandLen, breakpoint_list, table, run, &verbose)) {
 			if (v6502_compareDebuggerCommand(command, commandLen, "help")) {
 				printf("woz                 Print relevant woz monitor parameters and registers.\n");
@@ -190,19 +189,19 @@ int main(int argc, const char * argv[])
 				   "YSAV 0x%02x\n"
 				   "MODE 0x%02x\n",
 				   v6502_read(cpu->memory, A1PIA_KEYBOARD_INPUT_REGISTER, NO),
-				   v6502_read(cpu->memory, 0x24, NO), // XAML
-				   v6502_read(cpu->memory, 0x25, NO), // XAMH
-				   v6502_read(cpu->memory, 0x26, NO), // STL
-				   v6502_read(cpu->memory, 0x27, NO), // STH
-				   v6502_read(cpu->memory, 0x28, NO), // L
-				   v6502_read(cpu->memory, 0x29, NO), // H
-				   v6502_read(cpu->memory, 0x2A, NO), // YSAV
-				   v6502_read(cpu->memory, 0x2B, NO));// MODE
+				   v6502_read(cpu->memory, 0x24, NO),  // XAML
+				   v6502_read(cpu->memory, 0x25, NO),  // XAMH
+				   v6502_read(cpu->memory, 0x26, NO),  // STL
+				   v6502_read(cpu->memory, 0x27, NO),  // STH
+				   v6502_read(cpu->memory, 0x28, NO),  // L
+				   v6502_read(cpu->memory, 0x29, NO),  // H
+				   v6502_read(cpu->memory, 0x2A, NO),  // YSAV
+				   v6502_read(cpu->memory, 0x2B, NO)); // MODE
 		}
 		else if (v6502_compareDebuggerCommand(command, commandLen, "nonstop")) {
 //			char *trimmedCommand = trimheadtospc(command, commandLen);
 //
-//			if(trimmedCommand[0]) {
+//			if (trimmedCommand[0]) {
 				printf("Nonstop mode %d -> %d\n", continuousMode, !continuousMode);
 				continuousMode = !continuousMode;
 //			}
@@ -213,7 +212,7 @@ int main(int argc, const char * argv[])
 		else if (v6502_compareDebuggerCommand(command, commandLen, "freeze")) {
 			char *trimmedCommand = trimheadtospc(command, commandLen);
 
-			if(trimmedCommand[0]) {
+			if (trimmedCommand[0]) {
 				saveFreeze(pia, trimmedCommand);
 			}
 			else {
@@ -223,7 +222,7 @@ int main(int argc, const char * argv[])
 		else if (v6502_compareDebuggerCommand(command, commandLen, "restore")) {
 			char *trimmedCommand = trimheadtospc(command, commandLen);
 
-			if(trimmedCommand[0]) {
+			if (trimmedCommand[0]) {
 				loadFreeze(pia, trimmedCommand);
 			}
 			else {
@@ -235,7 +234,7 @@ int main(int argc, const char * argv[])
 			as6502_executeAsmLineOnCPU(cpu, command, strlen(command));
 		}
 	}
-	
+
 	as6502_destroySymbolTable(table);
 	v6502_destroyBreakpointList(breakpoint_list);
 	history_end(hist);
