@@ -203,10 +203,14 @@ a1pia *pia_create(v6502_cpu *cpu) {
 	pia->screen = NULL;
 	pia->buf = '\0';
 
-	assert(v6502_map(cpu->memory, A1PIA_KEYBOARD_INPUT_REGISTER, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia));
-	assert(v6502_map(cpu->memory, A1PIA_KEYBOARD_READY_REGISTER, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia));
-	assert(v6502_map(cpu->memory, A1PIA_VIDEO_OUTPUT_REGISTER, 1, NULL, (v6502_writeFunction *)videoWriteCharCallback, pia));
-	assert(v6502_map(cpu->memory, A1PIA_VIDEO_ATTR_REGISTER, 1, NULL, (v6502_writeFunction *)videoWriteNewlineCallback, pia));
+	int success = v6502_map(cpu->memory, A1PIA_KEYBOARD_INPUT_REGISTER, 1, (v6502_readFunction *)keyboardReadCharacterCallback, NULL, pia);
+	assert(success);
+	success = v6502_map(cpu->memory, A1PIA_KEYBOARD_READY_REGISTER, 1, (v6502_readFunction *)keyboardReadReadyCallback, NULL, pia);
+	assert(success);
+	success = v6502_map(cpu->memory, A1PIA_VIDEO_OUTPUT_REGISTER, 1, NULL, (v6502_writeFunction *)videoWriteCharCallback, pia);
+	assert(success);
+	success = v6502_map(cpu->memory, A1PIA_VIDEO_ATTR_REGISTER, 1, NULL, (v6502_writeFunction *)videoWriteNewlineCallback, pia);
+	assert(success);
 
 	return pia;
 }
