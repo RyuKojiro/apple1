@@ -131,15 +131,21 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 		return 0xbf;
 	}
 
+	// Already have something waiting for the keyboardReadCharacterCallback
 	if (context->buf) {
 		return KEYBOARD_READY;
 	}
 
+	int c;
 	if (context->suspended) {
 		printf("Keyboard readiness register ($D011) trap read.\n");
 		printf("Press a key for input to keyboard register ($D010): ");
 		fflush(stdout);
 		crmode();
+
+		c = wgetch(context->screen);
+
+		printf("%c\r\n", c);
 	}
 	else {
 		int x, y;
@@ -148,15 +154,9 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 		attroff(A_REVERSE);
 		wprintw(context->screen, " ");
 		wmove(context->screen, y, x);
-	}
 
-	int c = wgetch(context->screen);
-	if (context->suspended) {
-		printf("%c\r\n", c);
-	}
-	else {
-		int x, y;
-		getyx(context->screen, y, x);
+		c = wgetch(context->screen);
+
 		wmove(context->screen, 0, getmaxx(context->screen) - 1);
 		attron(A_REVERSE);
 		wprintw(context->screen, "!");
@@ -164,17 +164,15 @@ uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset,
 		wmove(context->screen, y, x);
 	}
 
-	if (c == '`') {
-		context->signalled++;
-		return KEYBOARD_NOTREADY;
+	switch (c) {
+		case '`':
+			context->signalled++;
+		case ERR:
+			return KEYBOARD_NOTREADY;
+		default:
+			context->buf = asciiCharFromCursesKey(c);
+			return KEYBOARD_READY;
 	}
-
-	if (c != ERR) {
-		context->buf = asciiCharFromCursesKey(c);
-		return KEYBOARD_READY;
-	}
-
-	return KEYBOARD_NOTREADY;
 }
 
 uint8_t keyboardReadCharacterCallback(struct _v6502_memory *memory, uint16_t offset, int trap, a1pia *context) {
@@ -188,9 +186,12 @@ uint8_t keyboardReadCharacterCallback(struct _v6502_memory *memory, uint16_t off
 
 	if (context->buf) {
 		uint8_t a = a1CharFromAsciiChar(context->buf);
+
+		// Only pop the character off the buffer if this is a trapped read
 		if (trap) {
 			context->buf = '\0';
 		}
+
 		return a;
 	}
 
