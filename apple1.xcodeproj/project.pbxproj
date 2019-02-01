@@ -7,13 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E66839001BA4F75C008F0F06 /* liblibv6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838F61BA4F705008F0F06 /* liblibv6502.a */; };
-		E668391B1BA64C5B008F0F06 /* liblibdis6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838FC1BA4F705008F0F06 /* liblibdis6502.a */; };
-		E668391E1BA64C61008F0F06 /* liblibas6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838F81BA4F705008F0F06 /* liblibas6502.a */; };
+		E66839001BA4F75C008F0F06 /* libv6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838F61BA4F705008F0F06 /* libv6502.a */; };
+		E668391B1BA64C5B008F0F06 /* libdis6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838FC1BA4F705008F0F06 /* libdis6502.a */; };
+		E668391E1BA64C61008F0F06 /* libas6502.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E66838F81BA4F705008F0F06 /* libas6502.a */; };
 		E66839201BA659A6008F0F06 /* libcurses.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E668391F1BA659A6008F0F06 /* libcurses.dylib */; };
 		E6CF366B1CB9D267008A8A43 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = E6CF36671CB9D267008A8A43 /* main.c */; };
 		E6CF366C1CB9D267008A8A43 /* pia.c in Sources */ = {isa = PBXBuildFile; fileRef = E6CF36681CB9D267008A8A43 /* pia.c */; };
-		E6CF366D1CB9D267008A8A43 /* wozmon.s in Sources */ = {isa = PBXBuildFile; fileRef = E6CF366A1CB9D267008A8A43 /* wozmon.s */; };
 		E6ECE7B91BABED0100D1812C /* libedit.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E6ECE7B81BABED0100D1812C /* libedit.dylib */; };
 /* End PBXBuildFile section */
 
@@ -24,13 +23,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = E64198E117373A5A00D0EE25;
 			remoteInfo = as6502;
-		};
-		E66838E91BA4F705008F0F06 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = E66838D31BA4F705008F0F06 /* v6502.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = E622934B175BB52900AD2866;
-			remoteInfo = easy6502;
 		};
 		E66838EB1BA4F705008F0F06 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -149,9 +141,9 @@
 			files = (
 				E6ECE7B91BABED0100D1812C /* libedit.dylib in Frameworks */,
 				E66839201BA659A6008F0F06 /* libcurses.dylib in Frameworks */,
-				E668391E1BA64C61008F0F06 /* liblibas6502.a in Frameworks */,
-				E668391B1BA64C5B008F0F06 /* liblibdis6502.a in Frameworks */,
-				E66839001BA4F75C008F0F06 /* liblibv6502.a in Frameworks */,
+				E668391E1BA64C61008F0F06 /* libas6502.a in Frameworks */,
+				E668391B1BA64C5B008F0F06 /* libdis6502.a in Frameworks */,
+				E66839001BA4F75C008F0F06 /* libv6502.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,16 +193,15 @@
 			isa = PBXGroup;
 			children = (
 				E66838E81BA4F705008F0F06 /* as6502 */,
-				E66838EA1BA4F705008F0F06 /* easy6502 */,
 				E66838EC1BA4F705008F0F06 /* v6502 */,
 				E66838EE1BA4F705008F0F06 /* dis6502 */,
 				E66838F01BA4F705008F0F06 /* ld6502 */,
 				E66838F21BA4F705008F0F06 /* kmapgen */,
 				E66838F41BA4F705008F0F06 /* tests */,
-				E66838F61BA4F705008F0F06 /* liblibv6502.a */,
-				E66838F81BA4F705008F0F06 /* liblibas6502.a */,
-				E66838FA1BA4F705008F0F06 /* liblibld6502.a */,
-				E66838FC1BA4F705008F0F06 /* liblibdis6502.a */,
+				E66838F61BA4F705008F0F06 /* libv6502.a */,
+				E66838F81BA4F705008F0F06 /* libas6502.a */,
+				E66838FA1BA4F705008F0F06 /* libld6502.a */,
+				E66838FC1BA4F705008F0F06 /* libdis6502.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -283,13 +274,6 @@
 			remoteRef = E66838E71BA4F705008F0F06 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		E66838EA1BA4F705008F0F06 /* easy6502 */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = easy6502;
-			remoteRef = E66838E91BA4F705008F0F06 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		E66838EC1BA4F705008F0F06 /* v6502 */ = {
 			isa = PBXReferenceProxy;
 			fileType = "compiled.mach-o.executable";
@@ -325,31 +309,31 @@
 			remoteRef = E66838F31BA4F705008F0F06 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		E66838F61BA4F705008F0F06 /* liblibv6502.a */ = {
+		E66838F61BA4F705008F0F06 /* libv6502.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = liblibv6502.a;
+			path = libv6502.a;
 			remoteRef = E66838F51BA4F705008F0F06 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		E66838F81BA4F705008F0F06 /* liblibas6502.a */ = {
+		E66838F81BA4F705008F0F06 /* libas6502.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = liblibas6502.a;
+			path = libas6502.a;
 			remoteRef = E66838F71BA4F705008F0F06 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		E66838FA1BA4F705008F0F06 /* liblibld6502.a */ = {
+		E66838FA1BA4F705008F0F06 /* libld6502.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = liblibld6502.a;
+			path = libld6502.a;
 			remoteRef = E66838F91BA4F705008F0F06 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		E66838FC1BA4F705008F0F06 /* liblibdis6502.a */ = {
+		E66838FC1BA4F705008F0F06 /* libdis6502.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
-			path = liblibdis6502.a;
+			path = libdis6502.a;
 			remoteRef = E66838FB1BA4F705008F0F06 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -362,7 +346,6 @@
 			files = (
 				E6CF366C1CB9D267008A8A43 /* pia.c in Sources */,
 				E6CF366B1CB9D267008A8A43 /* main.c in Sources */,
-				E6CF366D1CB9D267008A8A43 /* wozmon.s in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
