@@ -127,6 +127,7 @@ void videoWriteNewlineCallback(struct _v6502_memory *memory, uint16_t offset, ui
 }
 
 uint8_t keyboardReadReadyCallback(struct _v6502_memory *memory, uint16_t offset, int trap, a1pia *context) {
+	// Feed fake data to non-programs
 	if (!trap) {
 		return 0xbf;
 	}
@@ -187,7 +188,7 @@ uint8_t keyboardReadCharacterCallback(struct _v6502_memory *memory, uint16_t off
 	if (context->buf) {
 		uint8_t a = a1CharFromAsciiChar(context->buf);
 
-		// Only pop the character off the buffer if this is a trapped read
+		// Only pop the character off the buffer if this is an actual program
 		if (trap) {
 			context->buf = '\0';
 		}
